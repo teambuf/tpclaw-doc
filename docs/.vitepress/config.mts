@@ -6,6 +6,9 @@ export default withMermaid(defineConfig({
   description: "AI 智能体平台",
   lang: 'zh-CN',
 
+  // 忽略死链接检查（localhost 是示例 URL）
+  ignoreDeadLinks: true,
+
   head: [
     ['meta', { name: 'theme-color', content: '#3eaf7c' }],
     ['meta', { name: 'og:type', content: 'website' }],

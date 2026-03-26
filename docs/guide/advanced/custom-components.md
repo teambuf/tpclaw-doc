@@ -53,5 +53,5 @@ func init() {
 }
 ```
 ## 相关文档
-- [工具系统](/guide/core-features/tools) - 工具详细配置
-- [规则链](/guide/core-features/rule-chains) - 规则链配置
+- [工具概述](/guide/tools/) - 工具详细配置
+- [智能体](/guide/core-features/agents) - 智能体配置

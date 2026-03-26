@@ -23,7 +23,7 @@ tpclaw service start
 tpclaw service status
 ```
 
-启动成功后，访问 http://localhost:9527 进入 Web 界面。
+启动成功后，访问 `http://localhost:9527` 进入 Web 界面。
 
 ## 第二步：登录系统
 
@@ -125,9 +125,9 @@ TpClaw 支持移动端访问，自动适配手机界面：
 恭喜您完成了快速入门！接下来您可以：
 
 - [配置 API Key](./api-key.md) - 详细了解 API Key 配置
-- [核心功能](../core-features/) - 探索更多核心功能
-- [工具/技能](../tools/) - 了解智能体的工具能力
-- [通道配置](../channels/) - 接入飞书、钉钉等 IM 通道
+- [核心功能](/guide/core-features/agents) - 探索更多核心功能
+- [工具/技能](/guide/tools/) - 了解智能体的工具能力
+- [通道配置](/guide/channels/api) - 接入飞书、钉钉等 IM 通道
 
 ## 获取帮助
 

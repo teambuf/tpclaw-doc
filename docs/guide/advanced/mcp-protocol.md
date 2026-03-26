@@ -27,4 +27,4 @@ mcp:
     port: 8080
 ```
 ## 相关文档
-- [MCP 工具](/guide/tools/mcp) - MCP 工具配置
+- [工具概述](/guide/tools/) - 工具系统概述

@@ -161,5 +161,5 @@ parameters:
 
 ## 相关文档
 
-- [技能系统](/guide/core-features/skills) - 技能详细说明
+- [工具概述](/guide/tools/) - 工具概述
 - [工作空间](/guide/workspace/structure) - 工作空间结构

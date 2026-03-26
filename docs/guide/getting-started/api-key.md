@@ -448,4 +448,4 @@ tpclaw logs --filter "401 OR 403"
 - [环境要求](./requirements.md)
 - [安装指南](./installation.md)
 - [快速入门](./quickstart.md)
-- [配置说明](../configuration/)
+- [配置说明](/guide/configuration/config-file)

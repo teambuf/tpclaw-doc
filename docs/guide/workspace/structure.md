@@ -176,5 +176,5 @@ _你刚刚醒来.是时候弄清楚你是谁了._
 ## 相关文档
 - [IDENTITY.md](/guide/workspace/identity) - 身份定义详解
 - [AGENTS.md](/guide/workspace/agents-workspace) - 工作流程详解
-- [技能系统](/guide/core-features/skills) - 技能配置
+- [技能工具](/guide/tools/skill) - 技能配置
 - [智能体配置](/guide/configuration/agents) - 智能体配置

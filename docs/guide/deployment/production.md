@@ -405,6 +405,6 @@ tar -xzf backup/data-20240115.tar.gz -C ./
 
 ## 相关文档
 
-- [Docker 部署](/guide/deployment/docker) - Docker 部署指南
+- [本地开发](/guide/deployment/local) - 本地开发环境配置
 - [监控告警](/guide/deployment/monitoring) - 监控配置
 - [配置文件](/guide/configuration/config-file) - 配置说明

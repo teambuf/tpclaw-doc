@@ -319,4 +319,4 @@ workspace/
 
 - [架构概览](/guide/introduction/architecture) - 了解系统架构
 - [智能体配置](/guide/core-features/agents) - 详细配置智能体
-- [规则链设计](/guide/core-features/rule-chains) - 设计工作流
+- [智能体配置](/guide/configuration/agents) - 智能体配置详解
