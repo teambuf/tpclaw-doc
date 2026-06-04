@@ -183,7 +183,6 @@ export default withMermaid(defineConfig({
             { text: '分析项目代码', link: '/guide/examples/code-analysis' },
             { text: '浏览器搜索', link: '/guide/examples/browser-search' },
             { text: '自动化任务', link: '/guide/examples/automation' },
-            { text: '浏览器自动化', link: '/guide/examples/browser-automation' },
           ]
         }
       ],
