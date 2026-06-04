@@ -39,6 +39,7 @@ export default withMermaid(defineConfig({
           { text: '使用示例', link: '/guide/examples/code-analysis' },
         ]
       },
+      { text: '下载', link: '/guide/getting-started/installation' },
       { text: 'GitHub', link: 'https://github.com/teambuf/tpclaw' }
     ],
 
