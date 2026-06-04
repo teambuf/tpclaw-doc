@@ -21,11 +21,11 @@
 
 | 平台 | 架构 | 下载 |
 |------|------|------|
-| Windows | AMD64 | [tpclaw-v1.0.7-windows-amd64-embed.zip](https://gitee.com/rulego/tpclaw/raw/main/releases/tpclaw-v1.0.7-windows-amd64-embed.zip) |
-| Linux | AMD64 | [tpclaw-v1.0.7-linux-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/raw/main/releases/tpclaw-v1.0.7-linux-amd64-embed.tar.gz) |
-| Linux | ARM64 | [tpclaw-v1.0.7-linux-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/raw/main/releases/tpclaw-v1.0.7-linux-arm64-embed.tar.gz) |
-| macOS | ARM64 | [tpclaw-v1.0.7-darwin-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/raw/main/releases/tpclaw-v1.0.7-darwin-arm64-embed.tar.gz) |
-| macOS | AMD64 | [tpclaw-v1.0.7-darwin-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/raw/main/releases/tpclaw-v1.0.7-darwin-amd64-embed.tar.gz) |
+| Windows | AMD64 | [tpclaw-v1.0.7-windows-amd64-embed.zip](https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-windows-amd64-embed.zip) |
+| Linux | AMD64 | [tpclaw-v1.0.7-linux-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-linux-amd64-embed.tar.gz) |
+| Linux | ARM64 | [tpclaw-v1.0.7-linux-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-linux-arm64-embed.tar.gz) |
+| macOS | ARM64 | [tpclaw-v1.0.7-darwin-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-darwin-arm64-embed.tar.gz) |
+| macOS | AMD64 | [tpclaw-v1.0.7-darwin-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-darwin-amd64-embed.tar.gz) |
 
 > 更多历史版本请访问 [GitHub Releases](https://github.com/teambuf/tpclaw/releases) 页面。
 
