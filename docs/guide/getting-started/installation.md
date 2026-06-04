@@ -278,6 +278,43 @@ tpclaw --help
 
 访问 `http://localhost:9527` 验证服务是否正常运行。
 
+## 升级
+
+### Linux 升级
+
+下载新版本后，替换二进制文件并重启服务即可，数据和工作空间无需迁移。
+
+**用户级安装升级：**
+
+```bash
+# 1. 解压新版本
+tar -xzf tpclaw-1.x.x-linux-amd64-embed.tar.gz
+cd tpclaw
+
+# 2. 替换二进制文件
+sudo cp tpclaw /usr/local/bin/tpclaw
+
+# 3. 重启服务
+tpclaw service restart
+
+# 4. 验证版本
+tpclaw version
+```
+
+**系统级安装升级：**
+
+```bash
+# 同上，替换二进制后重启
+sudo cp tpclaw /usr/local/bin/tpclaw
+sudo systemctl restart tpclaw
+```
+
+> 升级只会替换二进制文件，不会影响 `~/.tpclaw/` 下的配置、智能体、会话和技能数据。
+
+### Windows 升级
+
+下载新版本解压后，将 `tpclaw.exe` 复制到旧版本目录覆盖即可（建议先备份 `config.yaml`）。
+
 ## 常见问题
 
 ### Q: 编译时提示 Go 版本不兼容？
