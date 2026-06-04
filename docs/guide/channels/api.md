@@ -1,17 +1,51 @@
 # API 通道
 
-API 通道用于外部系统通过 REST API 调用智能体。
+API 通道将智能体的能力以 **OpenAI Chat Completions 协议** 对外提供服务，让任何已接入 OpenAI API 的应用只需改一行配置就能切换到 TpClaw 智能体。
+
+## 核心优势：零改造接入
+
+传统做法需要为每个 AI 应用单独开发对接逻辑，而 TpClaw 的 API 通道完全兼容 OpenAI 协议，意味着：
+
+- **已有 OpenAI 应用**：只需修改 `base_url` 和 `api_key`，即可将底层切换为 TpClaw 智能体，**无需改任何业务代码**
+- **新应用开发**：直接使用熟悉的 OpenAI SDK 调用，学习成本为零
+- **多语言支持**：Python、JavaScript、Go、Java 等所有 OpenAI SDK 都能直接使用
+
+```python
+# 只需改两行，就能从 OpenAI 切换到 TpClaw 智能体
+import openai
+
+client = openai.OpenAI(
+    api_key="your-tpclaw-api-key",           # 改为 TpClaw 的 API Key
+    base_url="http://localhost:9527/api/v1"   # 改为 TpClaw 的地址
+)
+# 其他代码完全不变
+response = client.chat.completions.create(
+    model="main",
+    messages=[{"role": "user", "content": "你好"}]
+)
+```
 
 ## 概述
 
 API 通道提供了一种标准化的方式，让外部系统可以通过 API Key 认证调用智能体。适用于：
 
+- 将现有 AI 应用快速迁移到 TpClaw
 - 第三方系统集成
-- Web 应用后端
-- 移动应用后端
-- 自动化脚本
+- Web / 移动应用后端
+- 自动化脚本和定时任务
 
 ## 配置
+
+### 界面配置
+
+点击左侧菜单「设置」→ 选择「通道配置」标签页，找到 API 通道进行配置。
+
+![API 通道配置](/img/channel-api/0.api-setting.png)
+
+在 API 通道设置页面可以：
+- 查看和添加 API 账户
+- 为每个账户生成独立的 API Key
+- 配置账户名称和描述
 
 ### YAML 配置
 

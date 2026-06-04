@@ -1,43 +1,110 @@
-# 模型配置
+# 大模型配置
 
-配置 TPCLAW 使用的 LLM 模型供应商。
+配置 TpClaw 使用的 LLM 大模型供应商。支持所有**兼容 OpenAI API 协议**的供应商。
+
+## 重要说明
+
+- **主智能体使用默认供应商**，添加供应商后需要将它设为默认才会生效
+- 系统同一时间只能有一个默认供应商
+- 每个供应商可以配置多个可用模型
+
+---
+
+## 配置步骤
+
+### 进入大模型配置
+
+点击左侧菜单「设置」→ 选择「大模型配置」标签页。
+
+![大模型配置](/img/llm-setting/0.设置-大模型配置.png)
+
+供应商列表页面展示所有已配置的供应商卡片，每个卡片显示：
+- 供应商名称、Base URL、默认模型
+- 状态标签：「默认」「已配置」「未配置 API Key」
+- 可用模型列表和操作按钮（星标、编辑、删除）
+
+### 添加供应商
+
+点击右上角「+ 添加供应商」按钮：
+
+![添加供应商](/img/llm-setting/1.添加供应商.png)
+
+在弹出的对话框中填写：
+
+| 字段 | 说明 |
+|------|------|
+| **供应商 ID** | 从预设列表选择（如 `openai`、`zhipu`）或自定义输入，用于唯一标识 |
+| **显示名称** | 供应商的显示名称，如「OpenAI」「智谱 AI」 |
+| **Base URL** | API 接口地址，选择预设供应商会自动填充 |
+| **API Key** | 该供应商的 API 密钥 |
+| **可用模型** | 配置该供应商支持的模型列表，点击星标设为默认模型 |
+
+选择预设供应商时，Base URL 会自动填充。也可以手动输入 Base URL 来接入任何兼容 OpenAI 协议的服务。
+
+### 设置默认供应商
+
+添加供应商后，点击供应商卡片上的**星标按钮**（⭐），将其设为默认供应商。
+
+![设置默认供应商](/img/llm-setting/2.设置成默认供应商.png)
+
+设为默认后：
+- 卡片上会显示绿色的「默认」标签
+- **主智能体将使用该供应商的模型**
+- 之前设置的默认供应商会自动取消
+
+> 未配置 API Key 的供应商无法设为默认，请先点击编辑按钮配置 API Key。
+
+---
 
 ## 支持的供应商
 
+TpClaw 支持所有兼容 OpenAI API 协议的供应商，以下是常见的预设供应商：
+
 | 供应商 | 类型 | 说明 |
 |--------|------|------|
-| OpenAI | 云端 | GPT-4, GPT-3.5 等 |
-| 智谱 AI | 云端 | GLM-4, GLM-5 系列 |
+| 智谱 AI | 云端 | GLM-5、GLM-4 系列 |
 | 阿里云百炼 | 云端 | 通义千问系列 |
+| OpenAI | 云端 | GPT-4、GPT-3.5 系列 |
+| DeepSeek | 云端 | DeepSeek 系列 |
 | Ollama | 本地 | 开源本地模型 |
-| Azure OpenAI | 云端 | Azure 托管的 OpenAI |
-| 自定义 | - | 兼容 OpenAI API 的服务 |
+| 自定义 | - | 任何兼容 OpenAI 协议的服务 |
 
-## 配置结构
+### 接入自定义供应商
+
+如果你的供应商不在预设列表中，只需满足以下条件即可接入：
+
+1. API 兼容 OpenAI Chat Completions 协议（`/v1/chat/completions`）
+2. 填写正确的 Base URL 和 API Key
+
+例如接入 DeepSeek：
+- 供应商 ID：`deepseek`
+- Base URL：`https://api.deepseek.com/v1`
+- API Key：你的 DeepSeek API Key
+
+---
+
+## 模型参数
+
+在供应商卡片中点击编辑按钮，可以展开配置模型参数：
+
+| 参数 | 范围 | 说明 |
+|------|------|------|
+| `temperature` | 0.0-2.0 | 采样温度，越高越随机 |
+| `topP` | 0.0-1.0 | 核采样参数 |
+| `maxTokens` | int | 最大输出长度 |
+| `frequencyPenalty` | 0.0-1.0 | 频率惩罚，防止重复 |
+| `presencePenalty` | 0.0-1.0 | 存在惩罚，鼓励新话题 |
+
+---
+
+## YAML 配置参考
+
+除了通过控制台界面配置外，也可以直接编辑配置文件：
 
 ```yaml
 models:
-  default: "default"              # 默认供应商名称
+  default: "default"                    # 默认供应商 ID
   providers:
-    <provider_id>:                # 供应商 ID（自定义）
-      name: "显示名称"             # 供应商显示名称
-      base_url: "https://..."     # API 地址
-      api_key: "xxx"              # API Key
-      model: "默认模型"            # 默认使用的模型
-      models:                     # 可用模型列表
-        - name: "模型名称"
-          alias: "别名"           # 可选，如 "default"
-          capabilities: []        # 可选，模型能力
-          context_window: 128000  # 可选，上下文窗口大小
-```
-
-## 完整配置示例
-
-```yaml
-models:
-  default: "default"
-  providers:
-    # 默认供应商（智谱 Coding）
     default:
       name: "智谱 Coding"
       base_url: "https://open.bigmodel.cn/api/coding/paas/v4"
@@ -48,50 +115,7 @@ models:
           alias: "default"
         - name: "glm-4"
         - name: "glm-4-flash"
-        - name: "glm-4-plus"
 
-    # 智谱 AI
-    zhipu:
-      name: "智谱"
-      base_url: "https://open.bigmodel.cn/api/paas/v4"
-      api_key: "${ZHIPU_API_KEY}"
-      model: "GLM-5"
-      models:
-        - name: "GLM-5"
-          alias: "default"
-        - name: "GLM-4-Plus"
-          capabilities: ["vision", "function_calling"]
-        - name: "GLM-4-Flash"
-        - name: "GLM-4.6V"
-          capabilities: ["vision"]
-          context_window: 128000
-
-    # 阿里云百炼
-    aliyun_bailian:
-      name: "阿里云百炼"
-      base_url: "https://dashscope.aliyuncs.com/compatible-mode/v1"
-      api_key: "${ALIYUN_API_KEY}"
-      model: "qwen-turbo"
-      models:
-        - name: "qwen-turbo"
-        - name: "qwen-plus"
-        - name: "qwen-max"
-          capabilities: ["vision", "function_calling"]
-          context_window: 32000
-
-    # 阿里云百炼 Coding
-    aliyun_bailian_coding:
-      name: "阿里云百炼 Coding"
-      base_url: "https://coding.dashscope.aliyuncs.com/v1"
-      api_key: "${ALIYUN_API_KEY}"
-      model: "qwen3.5-plus"
-      models:
-        - name: "qwen3.5-plus"
-          alias: "default"
-        - name: "qwen3-max"
-        - name: "qwen3-coder-plus"
-
-    # OpenAI
     openai:
       name: "OpenAI"
       base_url: "https://api.openai.com/v1"
@@ -99,229 +123,32 @@ models:
       model: "gpt-4"
       models:
         - name: "gpt-4"
-          alias: "default"
-          capabilities: ["vision", "function_calling"]
-          context_window: 128000
         - name: "gpt-4-turbo"
-          capabilities: ["vision", "function_calling"]
-          context_window: 128000
         - name: "gpt-3.5-turbo"
-          context_window: 16385
 
-    # Ollama 本地模型
     ollama:
       name: "Ollama 本地模型"
       base_url: "http://localhost:11434/v1"
       api_key: ""
       model: "llama2"
-      models:
-        - name: "llama2"
-        - name: "llama3"
-        - name: "qwen2"
 ```
 
-## 多模型配置
+### 在智能体中引用
 
-每个供应商可以配置多个可用模型：
-
-### 模型字段说明
-
-| 字段 | 类型 | 必填 | 说明 |
-|------|------|------|------|
-| `name` | string | 是 | 模型名称（API 调用时使用） |
-| `alias` | string | 否 | 模型别名，如 `default` 表示默认模型 |
-| `capabilities` | []string | 否 | 模型能力标签 |
-| `context_window` | int | 否 | 上下文窗口大小（token 数） |
-
-### 模型能力
-
-| 能力 | 说明 |
-|------|------|
-| `vision` | 支持图片输入 |
-| `function_calling` | 支持工具调用 |
-| `streaming` | 支持流式输出 |
-
-### 别名使用
-
-使用别名可以简化模型引用：
-
-```yaml
-models:
-  - name: "glm-5"
-    alias: "default"    # 使用 ${global.models.providers.default.model} 时返回 glm-5
-```
-
-## 在智能体中使用
-
-### 使用默认供应商
+智能体配置中通过变量引用供应商：
 
 ```json
 {
-  "configuration": {
-    "url": "${global.models.providers.default.base_url}",
-    "key": "${global.models.providers.default.api_key}",
-    "model": "${global.models.providers.default.model}"
-  }
+  "url": "${global.models.providers.default.base_url}",
+  "key": "${global.models.providers.default.api_key}",
+  "model": "${global.models.providers.default.model}"
 }
 ```
 
-### 指定供应商
-
-```json
-{
-  "configuration": {
-    "url": "${global.models.providers.zhipu.base_url}",
-    "key": "${global.models.providers.zhipu.api_key}",
-    "model": "${global.models.providers.zhipu.model}"
-  }
-}
-```
-
-### 直接指定模型
-
-```json
-{
-  "configuration": {
-    "url": "${global.models.providers.openai.base_url}",
-    "key": "${global.models.providers.openai.api_key}",
-    "model": "gpt-4-turbo"
-  }
-}
-```
-
-## 通过 API 管理
-
-### 获取供应商列表
-
-```bash
-GET /api/v1/config/models/providers
-```
-
-**响应示例：**
-
-```json
-[
-  {
-    "id": "default",
-    "name": "智谱 Coding",
-    "base_url": "https://open.bigmodel.cn/api/coding/paas/v4",
-    "model": "glm-5",
-    "models": [
-      {"name": "glm-5", "alias": "default"},
-      {"name": "glm-4"}
-    ]
-  }
-]
-```
-
-### 添加供应商
-
-```bash
-POST /api/v1/config/models/providers
-Content-Type: application/json
-
-{
-  "id": "openai",
-  "name": "OpenAI",
-  "base_url": "https://api.openai.com/v1",
-  "api_key": "sk-xxx",
-  "model": "gpt-4",
-  "models": [
-    {"name": "gpt-4", "alias": "default"},
-    {"name": "gpt-3.5-turbo"}
-  ]
-}
-```
-
-### 更新供应商
-
-```bash
-PUT /api/v1/config/models/providers/openai
-Content-Type: application/json
-
-{
-  "name": "OpenAI GPT",
-  "model": "gpt-4-turbo"
-}
-```
-
-### 更新 API Key
-
-```bash
-PUT /api/v1/config/models/providers/openai/api-key
-Content-Type: application/json
-
-{
-  "apiKey": "sk-new-key"
-}
-```
-
-### 删除供应商
-
-```bash
-DELETE /api/v1/config/models/providers/openai
-```
-
-## 模型参数
-
-在智能体配置中可以设置模型参数：
-
-```json
-{
-  "configuration": {
-    "params": {
-      "temperature": 0.7,
-      "topP": 0.9,
-      "maxTokens": 4096,
-      "frequencyPenalty": 0.5,
-      "presencePenalty": 0.5
-    }
-  }
-}
-```
-
-### 参数说明
-
-| 参数 | 范围 | 说明 |
-|------|------|------|
-| `temperature` | 0.0-2.0 | 采样温度，越高越随机 |
-| `topP` | 0.0-1.0 | 核采样参数 |
-| `maxTokens` | int | 最大输出长度 |
-| `frequencyPenalty` | 0.0-1.0 | 频率惩罚，防止重复 |
-| `presencePenalty` | 0.0-1.0 | 存在惩罚，鼓励新话题 |
-
-## 成本优化
-
-### 使用本地模型
-
-对于简单任务，使用 Ollama 本地模型：
-
-```yaml
-providers:
-  ollama:
-    base_url: "http://localhost:11434/v1"
-    model: "llama2"
-```
-
-### 合理设置参数
-
-```json
-{
-  "params": {
-    "maxTokens": 2000,
-    "temperature": 0.7
-  }
-}
-```
-
-### 按任务选择模型
-
-- 简单任务：使用轻量模型（gpt-3.5-turbo、glm-4-flash）
-- 复杂任务：使用高级模型（gpt-4、glm-4-plus）
-- 代码任务：使用编码专用模型
+---
 
 ## 相关文档
 
-- [配置文件](/guide/configuration/config-file) - 主配置文件
-- [智能体配置](/guide/configuration/agents) - 智能体配置
-- [REST API](/guide/api/rest-api) - API 参考
+- [配置文件](/guide/configuration/config-file) - 主配置文件说明
+- [智能体配置](/guide/configuration/agents) - 智能体详细配置
+- [快速入门](/guide/getting-started/quickstart) - 快速上手指南

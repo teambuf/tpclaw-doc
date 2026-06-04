@@ -4,29 +4,140 @@
 
 ## 概述
 
-飞书是字节跳动推出的企业协作平台，TPCLAW 支持通过飞书机器人接入智能体。
+飞书是字节跳动推出的企业协作平台。TPCLAW 支持通过**飞书长连接**方式接入，无需公网 IP 和域名，扫码即可完成绑定。
 
 ### 支持的功能
 
-- ✅ 接收和发送消息
-- ✅ 消息卡片
-- ✅ 富文本消息
-- ✅ 群聊消息
-- ✅ 私聊消息
-- ✅ 文件上传下载
-- ✅ 图片消息
-- ✅ 多账号支持
+- 接收和发送消息
+- 消息卡片和富文本消息
+- 群聊和私聊消息
+- 文件和图片消息
+- 多账号支持
 
 ## 前置条件
 
-1. 创建飞书开放平台应用
-2. 获取 App ID 和 App Secret
-3. 配置事件订阅
-4. 发布应用版本
+- 拥有飞书账号
+- 已部署并启动 TPCLAW 服务
 
-## 配置
+> 飞书长连接模式无需公网 IP、无需配置域名和事件订阅，适合个人和小团队快速接入。
 
-### YAML 配置
+---
+
+## 配置步骤
+
+### 第一步：进入通道管理
+
+点击左侧菜单「设置」→ 选择「通道管理」标签页。
+
+![配置飞书](/img/feishu/0.配置飞书.png)
+
+在通道配置页面中找到「飞书长连接」区域，点击「+ 添加账号」按钮。
+
+### 第二步：扫码绑定
+
+弹出添加飞书账号对话框后，使用飞书手机端扫描二维码完成绑定。
+
+![打开飞书扫一扫](/img/feishu/1.打开飞书扫一扫.png)
+
+> 二维码有有效期限制，请在有效期内完成扫码。如果二维码过期，关闭弹窗重新打开即可刷新。
+
+扫码成功后，飞书应用中会出现 TPCLaw 机器人。
+
+![打开应用](/img/feishu/2.根据配置设置后，打开应用.jpg)
+
+### 第三步：配置绑定和策略
+
+扫码完成后，在通道管理页面可以编辑账号配置。
+
+#### 绑定智能体
+
+默认情况下，飞书账号会绑定到主智能体。你也可以将不同的飞书机器人绑定到不同的智能体。
+
+![绑定智能体](/img/feishu/4.默认绑定主智能体，可以使用不同的飞书机器人绑定不同的智能体.png)
+
+#### 编辑账号配置
+
+点击账号的编辑按钮，可以配置以下内容：
+
+![编辑账号](/img/feishu/5.编辑账号，可以设置消息策略等.png)
+
+| 配置项 | 说明 |
+|--------|------|
+| **账号名称** | 标识该飞书账号的名称 |
+| **启用状态** | 开关控制该账号是否生效 |
+| **私聊策略** | 私聊消息的接收策略（允许所有 / 仅白名单 / 禁用） |
+| **群聊策略** | 群聊消息的接收策略（允许所有 / 仅白名单 / 禁用） |
+| **App ID** | 飞书应用的应用标识（扫码后自动填充） |
+| **App Secret** | 飞书应用密钥（留空保持原值） |
+| **加载历史** | 开启后每次对话会加载历史消息作为上下文 |
+| **绑定智能体** | 该飞书账号绑定的智能体 |
+
+### 第四步：开始使用
+
+配置完成后，在飞书中打开 TPCLaw 机器人即可开始对话。
+
+---
+
+## 消息策略说明
+
+| 策略值 | 说明 |
+|--------|------|
+| 允许所有 | 接收所有用户/群组的消息 |
+| 仅白名单 | 仅接收白名单中的用户/群组消息 |
+| 禁用 | 不处理该类型的消息 |
+
+---
+
+## 多账号配置
+
+TPCLAW 支持添加多个飞书账号，每个账号可以绑定不同的智能体：
+
+- 添加多个飞书机器人账号
+- 为每个账号设置独立的私聊/群聊策略
+- 将不同账号绑定到不同智能体
+
+典型场景：
+- **账号 A** → 绑定「客服智能体」，仅允许群聊
+- **账号 B** → 绑定「代码助手智能体」，允许私聊
+
+---
+
+## 手动配置
+
+如果扫码方式不可用，可以点击添加账号弹窗底部的「手动设置机器人」链接，手动填写 App ID 和 App Secret。
+
+### 获取 App ID 和 App Secret
+
+1. 访问 [飞书开放平台](https://open.feishu.cn)
+2. 创建企业自建应用
+3. 在应用的「凭证与基础信息」页面获取 App ID 和 App Secret
+
+---
+
+## 故障排查
+
+### 消息未收到
+
+1. 检查账号的启用状态是否开启
+2. 确认消息策略配置正确（非「禁用」）
+3. 检查飞书应用是否正常运行
+4. 查看 TPCLAW 服务日志
+
+### 扫码失败
+
+1. 确认二维码未过期
+2. 检查网络连通性
+3. 尝试关闭弹窗重新打开获取新二维码
+
+### 消息发送失败
+
+1. 检查 App Secret 配置是否正确
+2. 确认飞书应用权限配置
+3. 查看服务日志
+
+## YAML 配置参考
+
+除了通过控制台界面配置外，也可以直接编辑配置文件：
 
 ```yaml
 channels:
@@ -38,159 +149,13 @@ channels:
         enabled: true
         app_id: "cli_xxxxxxxxxxxx"
         app_secret: "xxxxxxxxxxxxxxxx"
-        encrypt_key: ""              # 可选，用于消息加密
-        verifier: ""                 # 可选，用于消息验证
-        dm_policy: "allow"           # 私聊策略
-        group_policy: "allow"        # 群聊策略
-        allow_from: []               # 白名单
+        encrypt_key: ""              # 可选，消息加密 Key
+        verifier: ""                 # 可选，消息验证 Token
+        dm_policy: "allow"           # 私聊策略：allow / disabled
+        group_policy: "allow"        # 群聊策略：allow / disabled
 ```
 
-### 多账号配置
-
-```yaml
-channels:
-  feishu:
-    enabled: true
-    accounts:
-      # 主账号
-      default:
-        name: "主飞书机器人"
-        enabled: true
-        app_id: "cli_xxx"
-        app_secret: "xxx"
-        dm_policy: "allow"
-        group_policy: "allow"
-
-      # 备用账号
-      backup:
-        name: "备用飞书机器人"
-        enabled: false
-        app_id: "cli_yyy"
-        app_secret: "yyy"
-        dm_policy: "disabled"
-        group_policy: "allow"
-```
-
-### 策略配置
-
-| 策略值 | 说明 |
-|--------|------|
-| `allow` | 允许所有消息 |
-| `disabled` | 禁用，不处理任何消息 |
-
-### 白名单配置
-
-```yaml
-channels:
-  feishu:
-    accounts:
-      default:
-        dm_policy: "allow"
-        group_policy: "allow"
-        allow_from:
-          - "ou_xxxxxxxxxxxx"  # 允许的部门 ID
-          - "on_xxxxxxxxxxxx"  # 允许的用户 ID
-          - "oc_xxxxxxxxxxxx"  # 允许的群组 ID
-```
-
-## 飞书开放平台配置
-
-### 1. 创建应用
-
-1. 访问 [飞书开放平台](https://open.feishu.cn)
-2. 创建企业自建应用
-3. 记录 App ID 和 App Secret
-
-### 2. 配置权限
-
-启用以下权限：
-
-| 权限 | 说明 |
-|------|------|
-| `im:message` | 获取与发送消息 |
-| `im:message:send_as_bot` | 以应用身份发消息 |
-| `im:chat` | 获取群组信息 |
-| `im:chat:readonly` | 读取群组信息 |
-| `contact:user.base:readonly` | 读取用户基本信息 |
-
-### 3. 配置事件订阅
-
-**请求地址**：
-```
-POST https://your-domain.com/api/v1/endpoint/feishu
-```
-
-**订阅事件**：
-- `im.message.receive_v1` - 接收消息
-
-### 4. 发布应用
-
-1. 配置完成后提交审核
-2. 审核通过后发布应用
-3. 将应用添加到目标群组
-
-## 消息格式
-
-### 接收消息
-
-```json
-{
-  "event": {
-    "type": "message",
-    "msg_type": "text",
-    "content": "你好",
-    "message_id": "om_xxxxxxxxxxxx",
-    "chat_id": "oc_xxxxxxxxxxxx",
-    "sender": {
-      "sender_id": {
-        "union_id": "on_xxxxxxxxxxxx",
-        "user_id": "xxxxxxxxxxxx"
-      },
-      "sender_type": "user"
-    }
-  }
-}
-```
-
-### 发送文本消息
-
-通过 API 发送：
-
-```bash
-curl -X POST http://localhost:9527/api/v1/channels/feishu/send \
-  -H "Content-Type: application/json" \
-  -d '{
-    "chatId": "oc_xxx",
-    "message": "Hello from TPCLAW!"
-  }'
-```
-
-### 发送图片消息
-
-```bash
-curl -X POST http://localhost:9527/api/v1/channels/feishu/send-image \
-  -H "Content-Type: application/json" \
-  -d '{
-    "chatId": "oc_xxx",
-    "imagePath": "/path/to/image.png"
-  }'
-```
-
-### 发送文件消息
-
-```bash
-curl -X POST http://localhost:9527/api/v1/channels/feishu/send-file \
-  -H "Content-Type: application/json" \
-  -d '{
-    "chatId": "oc_xxx",
-    "filePath": "/path/to/file.pdf",
-    "fileName": "document.pdf"
-  }'
-```
-
-## 绑定配置
-
-将飞书通道绑定到智能体：
+### 绑定配置
 
 ```yaml
 bindings:
@@ -199,69 +164,11 @@ bindings:
       default: true
       channel: "feishu"
       account_id: "default"
-
-  # 特定群组绑定到特定智能体
-  - agent_id: "customer_service"
-    match:
-      channel: "feishu"
-      account_id: "default"
-      peer:
-        kind: "group"
-        id: "oc_xxx"
 ```
-
-## 安全配置
-
-### 消息加密
-
-启用消息加密保护通信安全：
-
-```yaml
-channels:
-  feishu:
-    accounts:
-      default:
-        encrypt_key: "your-32-char-encrypt-key"
-```
-
-### 访问控制
-
-限制允许访问的用户/部门：
-
-```yaml
-channels:
-  feishu:
-    accounts:
-      default:
-        dm_policy: "allow"
-        group_policy: "allow"
-        allow_from:
-          - "ou_xxxxxxxxxxxx"  # 部门 ID
-          - "on_xxxxxxxxxxxx"  # 用户 ID
-```
-
-## 故障排查
-
-### 消息未收到
-
-1. 检查事件订阅是否正确
-2. 确认应用已发布并添加到群组
-3. 检查网络连通性
-4. 查看服务日志
-
-### 消息发送失败
-
-1. 检查权限配置
-2. 确认 chat_id 正确
-3. 查看服务日志
-
-### 签名验证失败
-
-1. 检查 App Secret 是否正确
-2. 确认时间同步
 
 ## 相关文档
 
 - [通道配置](/guide/configuration/channels) - 通用通道配置
-- [绑定规则](/guide/configuration/channels#bindings) - 智能体绑定
-- [REST API](/guide/api/rest-api) - API 参考
+- [智能体配置](/guide/configuration/agents) - 智能体详细配置
+- [钉钉通道](./dingtalk) - 钉钉通道配置
+- [企业微信通道](./wecom) - 企业微信通道配置

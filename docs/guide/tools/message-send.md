@@ -15,7 +15,7 @@ tpclaw message send <chat_id> --platform <platform> --message "消息内容"
 | `<chat_id>` | 是 | 目标聊天 ID（位置参数） |
 | `--platform` / `-p` | 是 | 通道平台（feishu/dingtalk/wecom） |
 | `--message` / `-m` | 是 | 消息内容 |
-| `--account` / `-a` | 否 | 账号 ID（默认：default） |
+| `--account` / `-a` | 是 | 账号 ID（必填） |
 
 ## 上下文通道信息
 

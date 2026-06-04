@@ -1,79 +1,82 @@
-# skill - 技能调用工具
+# 技能管理
 
-调用预定义的技能文件，让智能体执行特定任务。
+技能是预定义的任务模板，封装了特定的能力和知识，**通过技能可以无限扩展智能体的能力**。
 
 ## 概述
 
-`skill` 工具让智能体能够：
-- 调用预定义的技能
-- 执行复杂的任务流程
-- 复用知识和能力
+技能使用 Markdown 格式存储，定义了触发条件、执行步骤和输出格式。TPCLAW 支持两种管理方式：
 
-## 配置
+- **全局技能**：所有智能体共享，在「技能」菜单中管理
+- **本地技能**：仅特定智能体可用，在智能体编辑器的「技能」标签页中管理
 
-```json
-{
-  "type": "builtin",
-  "name": "skill",
-  "description": "调用预定义的技能文件",
-  "config": {
-    "userDirs": [
-      "${global.root_dir}/workspace/skills"
-    ]
-  }
-}
+### 兼容性
+
+TPCLAW 兼容市面上主流 AI 平台的技能格式，可以直接导入使用：
+
+- **OpenClaw** 技能
+- **Claude Code** 技能（slash commands）
+- **其他兼容 Markdown 格式的技能**
+
+> 只要是 Markdown 格式的技能文件，都可以直接上传到 TPCLAW 使用。
+
+---
+
+## 管理技能
+
+点击左侧菜单「技能」进入技能管理页面，可以查看、创建、编辑和删除全局技能。
+
+### 创建技能
+
+点击「+ 创建技能」按钮，在弹出的对话框中填写：
+
+![创建技能](/img/skill/1.技能-创建技能.png)
+
+| 字段 | 说明 |
+|------|------|
+| **技能名称** | 简短的英文标识，只允许字母、数字、中划线、下划线 |
+| **描述** | 描述该技能在什么情况下被触发 |
+| **指令** | 技能被触发时，模型应遵循的规则和步骤 |
+
+指令区域支持 Markdown 格式，建议按以下结构编写：
+
+```
+# 技能名称
+## 使用场景
+## 执行步骤
+## 输出格式
+## 示例
 ```
 
-### 配置参数
+### 上传技能
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `userDirs` | []string | - | 技能文件目录列表 |
-| `autoReload` | bool | true | 自动重新加载修改的技能 |
+支持通过上传 ZIP 压缩包批量导入技能：
 
-## 调用技能
+![上传技能](/img/skill/0.技能-上传技能压缩包.png)
 
-### 基本调用
+- 支持拖拽或点击选择文件
+- 仅支持 `.zip` 格式，最大 50MB
+- ZIP 包内的 `.md` 文件会自动识别为技能文件
 
-```json
-{
-  "name": "weather",
-  "params": {
-    "city": "北京"
-  }
-}
-```
+> 点击弹窗中的「技能压缩包格式说明」可查看详细的格式要求。
 
-### 带参数调用
+---
 
-```json
-{
-  "name": "translation",
-  "params": {
-    "text": "Hello, World!",
-    "from": "en",
-    "to": "zh"
-  }
-}
-```
+## 智能体本地技能
+
+在智能体编辑器中切换到「技能」标签页，可以为单个智能体配置本地技能。本地技能仅该智能体可用，适合专属能力配置。
+
+详见 [智能体管理](/guide/core-features/agents#技能)。
+
+---
 
 ## 技能文件格式
 
-技能文件使用 Markdown 格式，包含 YAML frontmatter：
+技能使用 Markdown 格式，包含 YAML frontmatter 元数据：
 
 ```markdown
 ---
 name: weather
 description: 查询天气信息
-parameters:
-  city:
-    type: string
-    required: true
-    description: 城市名称
-  date:
-    type: string
-    required: false
-    description: 日期（可选）
 ---
 
 # 天气查询技能
@@ -84,82 +87,16 @@ parameters:
 
 ## 执行步骤
 1. 确认城市名称
-2. 调用天气 API
+2. 调用搜索工具查询天气
 3. 返回格式化结果
 
 ## 输出格式
 **{city} 天气预报**
-🌡️ 温度: {temp}°C
-...
-```
-
-## 技能目录结构
-
-```
-workspace/skills/
-├── weather.md           # 天气查询
-├── translation.md       # 翻译
-├── code_review.md       # 代码审查
-├── data_analysis.md     # 数据分析
-└── custom/              # 自定义技能目录
-    └── my_skill.md
-```
-
-## 内置技能
-
-| 技能 | 说明 |
-|------|------|
-| `summary` | 文本摘要 |
-| `translation` | 多语言翻译 |
-| `code_explain` | 代码解释 |
-
-## 最佳实践
-
-### 1. 技能命名规范
-
-使用清晰、描述性的名称：
-
-```
-# 推荐
-weather_query.md
-code_review.md
-document_summary.md
-
-# 不推荐
-skill1.md
-temp.md
-```
-
-### 2. 完善的参数说明
-
-```yaml
-parameters:
-  code:
-    type: string
-    required: true
-    description: 要审查的代码内容
-  language:
-    type: string
-    required: false
-    description: 编程语言（go, python, javascript 等）
-    default: auto
-```
-
-### 3. 明确的输出格式
-
-在技能文件中定义输出格式：
-
-```markdown
-## 输出格式
-
-### 代码审查报告
-
-| 级别 | 位置 | 问题描述 | 建议 |
-|------|------|----------|------|
-| 严重 | Line 42 | SQL 注入风险 | 使用参数化查询 |
+温度: {temp}°C
 ```
 
 ## 相关文档
 
-- [工具概述](/guide/tools/) - 工具概述
+- [智能体管理](/guide/core-features/agents) - 智能体配置
+- [工具概述](/guide/tools/) - 其他工具说明
 - [工作空间](/guide/workspace/structure) - 工作空间结构

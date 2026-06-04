@@ -253,7 +253,7 @@ agents:
       - type: builtin
         name: skill
         config:
-          userDirs:
+          localDirs:
             - "${global.root_dir}/workspace/skills"
 
       # 内置技能

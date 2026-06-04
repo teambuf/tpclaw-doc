@@ -1,66 +1,56 @@
 # 什么是 TPCLAW
 
-TPCLAW（TeamClaw）是一个**自托管**的 AI 智能体平台。它将可视化编排能力与现代 AI 技术相结合，让您可以轻松构建、部署和管理复杂的 AI 智能体系统。
+TPCLAW（TeamClaw）是一个**自托管**的 AI 智能体平台，基于 [RuleGo 规则引擎](https://github.com/rulego/rulego) 和 [RuleGo AI 智能体开发框架](https://github.com/rulego/rulego-components-ai) 构建。它将可视化规则链编排能力与现代 AI 技术相结合，让您可以轻松构建、部署和管理复杂的 AI 智能体系统。
 
-## 概述
+## 与 RuleGo 智能体框架的关系
 
-TPCLAW 的核心理念是"**可视化编排，智能驱动**"。通过可视化设计，您可以灵活地组合各种 AI 能力、工具和通道， 构建出满足特定业务需求的智能体应用。
+TPCLAW 是基于 [RuleGo AI 智能体开发框架](https://rulego.cc/pages/ai-agent-overview/)（rulego-components-ai）构建的**开箱即用的智能体平台**。可以简单理解为：
 
 ```mermaid
 graph TB
-    subgraph "用户触达层"
-        A1[飞书]
-        A2[钉钉]
-        A3[企业微信]
-        A4[Telegram]
-        A5[WebSocket]
-    end
-
     subgraph "TPCLAW 平台"
-        B1[通道适配器]
-        B2[规则引擎]
-        B3[智能体编排]
-        B4[工具管理器]
-        B5[会话管理]
-        B6[记忆系统]
+        A1[Web 管理界面]
+        A2[IM 多通道接入]
+        A3[用户与权限管理]
+        A4[智能体 CRUD]
     end
 
-    subgraph "AI 能力层"
-        C1[OpenAI]
-        C2[智谱 AI]
-        C3[阿里云百炼]
-        C4[Ollama]
+    subgraph "RuleGo AI 智能体框架<br/>rulego-components-ai"
+        B1[Agent 模块<br/>ReAct 推理循环]
+        B2[Tool 模块<br/>内置工具 / MCP / 子智能体]
+        B3[Aspect 模块<br/>会话 / 日志 / 可视化]
+        B4[Session 模块<br/>存储 / 压缩]
     end
 
-    subgraph "工具层"
-        D1[文件操作]
-        D2[浏览器自动化]
-        D3[网络搜索]
-        D4[代码执行]
+    subgraph "RuleGo 规则引擎"
+        C1[规则链执行 / 节点管理 / 消息流转]
     end
 
     A1 --> B1
     A2 --> B1
-    A3 --> B1
+    A3 --> B3
     A4 --> B1
-    A5 --> B1
-
-    B1 --> B2
-    B2 --> B3
-    B3 --> B4
-    B3 --> B5
-    B3 --> B6
-
-    B3 --> C1
-    B3 --> C2
-    B3 --> C3
-    B3 --> C4
-
-    B4 --> D1
-    B4 --> D2
-    B4 --> D3
-    B4 --> D4
+    B1 --> C1
+    B2 --> C1
 ```
+
+| 层级 | 组件 | 职责 |
+|------|------|------|
+| **平台层** | TPCLAW | Web UI、IM 通道、用户管理、智能体管理、心跳调度 |
+| **框架层** | rulego-components-ai | ReAct 推理循环、工具系统、AOP 切面、会话管理 |
+| **引擎层** | RuleGo 规则引擎 | 规则链编排、节点执行、消息流转 |
+
+> RuleGo AI 框架采用 **"规则链即智能体，智能体即服务"** 的设计理念——每个智能体本质上是一个 RuleGo 规则链，通过 JSON 声明式定义，修改后实时生效，无需编译部署；同时每个智能体对外暴露标准 OpenAI API，即定义即服务。TPCLAW 在此基础上提供了完整的平台功能。
+
+## 概述
+
+TPCLAW 的核心理念是"**自主执行，持续进化**"。智能体不仅能理解你的指令，还能自主规划步骤、调用工具完成任务，并在交互过程中不断积累经验和知识。
+
+**三大核心能力：**
+
+- **自主干活**：给一个目标，智能体会自主拆解任务、规划步骤、调用工具链完成执行。支持文件读写、Shell 命令、浏览器自动化、定时任务等，无需人工逐步干预。
+- **自主进化**：智能体具备记忆系统，能从每次交互中积累知识和经验。长期记忆、每日日志、心跳任务让智能体越用越聪明，越用越懂你。
+- **技能无限扩展**：兼容 OpenClaw、Claude Code 等市面上所有 Markdown 格式的技能，直接导入即可使用，一键赋予智能体新能力。
 
 ## 核心特性
 
@@ -78,14 +68,18 @@ graph TB
 - **动态路由**: 根据任务类型自动选择合适的智能体
 - **并行执行**: 支持多个子智能体并行处理任务
 
-### 可视化编排
+### 可视化编排智能体与工作流
 
-- **可视化编排**: 通过可视化设计工作流
-- **灵活组合**: 自由组合各种节点和组件
-- **动态加载**: 支持热更新配置
-- **条件分支**: 支持复杂的条件判断和路由
+TPCLAW 以 [RuleGo 规则引擎](https://github.com/rulego/rulego) 作为底层执行编排器，智能体和工作流都以规则链的形式定义：
+
+- **可视化设计**: 拖拽式编辑器编排智能体行为和工作流
+- **RuleGo 生态组件**: 直接使用 RuleGo 丰富的内置节点和社区组件（消息路由、条件分支、数据转换、外部调用等）
+- **热重载**: JSON 声明式定义，修改后实时生效，无需编译部署
+- **灵活路由**: 支持条件分支、子链调用、并行执行等复杂编排
 
 ### 丰富工具集
+
+内置文件读写、Shell 执行、浏览器自动化等工具，支持通过技能无限扩展：
 
 | 工具 | 说明 |
 |------|------|
@@ -93,20 +87,22 @@ graph TB
 | `write` | 文件写入、覆盖、追加 |
 | `edit` | 行级编辑、搜索替换、备份恢复 |
 | `bash` | Shell 命令执行 |
-| `skill` | 技能调用 |
+| `skill` | 技能调用，兼容 OpenClaw、Claude Code 等所有 Markdown 技能格式 |
 | `browser_use` | 浏览器自动化 |
-| `duckduckgo` | DuckDuckGo 搜索 |
-| `bingsearch` | Bing 搜索 |
+
+### 智能体即服务
+
+API 通道完全兼容 OpenAI Chat Completions 协议，**任何已接入 OpenAI API 的应用只需修改 `base_url` 和 `api_key`，即可零改造切换到 TpClaw 智能体**。
 
 ### IM 多通道
 
 支持多种主流 IM 平台的一键接入：
 
-- **飞书**: 支持机器人、事件订阅、消息卡片
-- **钉钉**: 支持机器人、回调、消息推送
-- **企业微信**: 支持应用消息、群机器人
-- **Telegram**: 支持 Bot、Webhook
-- **WebSocket**: 自定义通道接入
+- **飞书**: 长连接模式，扫码即用，无需公网 IP
+- **企业微信**: 智能机器人 API 长连接，自动接入
+- **钉钉**: 开发中
+- **Telegram**: 开发中
+- **WebSocket**: 开发中
 
 ### 记忆与进化
 
@@ -141,22 +137,10 @@ graph TB
 | 层级 | 技术 |
 |------|------|
 | 后端 | Go 1.24+ |
-| 规则引擎 | RuleGo |
-| AI 框架 | 字节跳动 Eino |
+| 规则引擎 | [RuleGo](https://github.com/rulego/rulego) |
+| AI 智能体框架 | [rulego-components-ai](https://github.com/rulego/rulego-components-ai) |
 | 前端 | Vue 3 + Vite |
-| 存储 | 文件系统 / Redis |
-| 容器化 | Docker |
-
-## 与 OpenClaw 的关系
-
-TPCLAW 的设计灵感部分来自 [OpenClaw](https://docs.openclaw.ai)，但在技术实现上有显著不同：
-
-| 特性 | TPCLAW | OpenClaw |
-|------|--------|----------|
-| 语言 | Go | Node.js |
-| 智能体模式 | 可视化编排 | 内置 Agent |
-| 工具扩展 | 组件化插件 | 内置工具 |
-| 可视化 | Web Dashboard |
+| 存储 | 文件系统 |
 
 ## 快速开始
 
@@ -168,11 +152,8 @@ cd tpclaw
 # 安装依赖
 go mod download
 
-# 配置 API Key
-export OPENAI_API_KEY="your-api-key"
-
 # 启动服务
-go run cmd/server/main.go
+go run cmd/tpclaw
 ```
 
 打开浏览器访问 http://127.0.0.1:9527 开始使用！
@@ -182,3 +163,4 @@ go run cmd/server/main.go
 - [核心概念](/guide/introduction/core-concepts) - 了解 TPCLAW 的核心概念
 - [架构概览](/guide/introduction/architecture) - 深入了解系统架构
 - [快速开始](/guide/getting-started/installation) - 开始安装和配置
+- [RuleGo AI 智能体框架](https://rulego.cc/pages/ai-agent-overview/) - 了解底层框架的设计理念

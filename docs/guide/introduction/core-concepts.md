@@ -4,7 +4,7 @@
 
 ## 智能体 (Agent)
 
-智能体是 TPCLAW 的核心执行单元，它负责接收用户请求、调用工具、与 LLM 交互，并生成响应。
+智能体是 TPCLAW 的核心执行单元，基于 [RuleGo AI 智能体框架](https://rulego.cc/pages/ai-agent-overview/) 的 ReAct 推理循环实现。它负责接收用户请求、调用工具、与 LLM 交互，并生成响应。
 
 ### 智能体组成
 
@@ -53,7 +53,7 @@ graph LR
 
 ## 规则链 (Rule Chain)
 
-规则链是 TPCLAW 的工作流编排核心，它定义了消息处理的流程和逻辑。
+规则链是 TPCLAW 的工作流编排核心，基于 [RuleGo 规则引擎](https://github.com/rulego/rulego)。每个智能体本质上是一个规则链，通过 JSON 声明式定义。
 
 ### 规则链结构
 
@@ -105,18 +105,17 @@ graph LR
 graph TB
     subgraph "工具分类"
         A[内置工具]
-        B[自定义工具]
+        B[扩展工具]
         C[智能体工具]
     end
 
     A --> A1[read/write/edit]
     A --> A2[bash/skill]
     A --> A3[browser_use]
-    A --> A4[搜索工具]
 
     B --> B1[MCP 工具]
-    B --> B2[HTTP 工具]
-    B --> B3[脚本工具]
+    B --> B2[规则链工具]
+    B --> B3[技能工具]
 
     C --> C1[子智能体]
     C --> C2[专家智能体]
@@ -320,3 +319,4 @@ workspace/
 - [架构概览](/guide/introduction/architecture) - 了解系统架构
 - [智能体配置](/guide/core-features/agents) - 详细配置智能体
 - [智能体配置](/guide/configuration/agents) - 智能体配置详解
+- [RuleGo AI 智能体框架](https://rulego.cc/pages/ai-agent-overview/) - 了解底层框架的核心概念

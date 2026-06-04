@@ -22,7 +22,7 @@ export default withMermaid(defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '介绍', link: '/guide/introduction/what-is-tpclaw' },
-      { text: '快速开始', link: '/guide/getting-started/installation' },
+      { text: '快速开始', link: '/guide/getting-started/quickstart' },
       {
         text: '核心功能',
         items: [
@@ -36,9 +36,10 @@ export default withMermaid(defineConfig({
           { text: 'CLI 命令', link: '/guide/api/cli' },
           { text: 'REST API', link: '/guide/api/rest-api' },
           { text: '应用案例', link: '/guide/use-cases/' },
+          { text: '使用示例', link: '/guide/examples/code-analysis' },
         ]
       },
-      { text: 'GitHub', link: 'https://github.com/rulego/tpclaw' }
+      { text: 'GitHub', link: 'https://github.com/teambuf/tpclaw' }
     ],
 
     sidebar: {
@@ -63,7 +64,6 @@ export default withMermaid(defineConfig({
             { text: '环境要求', link: '/guide/getting-started/requirements' },
             { text: '安装', link: '/guide/getting-started/installation' },
             { text: '5分钟入门', link: '/guide/getting-started/quickstart' },
-            { text: '配置 API Key', link: '/guide/getting-started/api-key' },
           ]
         }
       ],
@@ -117,8 +117,13 @@ export default withMermaid(defineConfig({
           items: [
             { text: 'API 通道', link: '/guide/channels/api' },
             { text: '飞书', link: '/guide/channels/feishu' },
-            { text: '钉钉', link: '/guide/channels/dingtalk' },
             { text: '企业微信', link: '/guide/channels/wecom' },
+          ]
+        },
+        {
+          text: '即将支持',
+          items: [
+            { text: '钉钉', link: '/guide/channels/dingtalk' },
             { text: 'Telegram', link: '/guide/channels/telegram' },
             { text: 'WebSocket', link: '/guide/channels/websocket' },
           ]
@@ -134,6 +139,7 @@ export default withMermaid(defineConfig({
             { text: '模型配置', link: '/guide/configuration/models' },
             { text: '智能体配置', link: '/guide/configuration/agents' },
             { text: '通道配置', link: '/guide/configuration/channels' },
+            { text: '认证配置', link: '/guide/configuration/api-key' },
             { text: '安全配置', link: '/guide/configuration/security' },
           ]
         }
@@ -168,29 +174,14 @@ export default withMermaid(defineConfig({
         }
       ],
 
-      // 高级主题
-      '/guide/advanced/': [
-        {
-          text: '高级主题',
-          items: [
-            { text: '多智能体协作', link: '/guide/advanced/multi-agent' },
-            { text: '子智能体', link: '/guide/advanced/sub-agent' },
-            { text: '统一智能体设计', link: '/guide/advanced/unified-agent' },
-            { text: '向量检索 RAG', link: '/guide/advanced/rag' },
-            { text: 'MCP 协议', link: '/guide/advanced/mcp-protocol' },
-            { text: '切面编程', link: '/guide/advanced/aspect' },
-            { text: '自定义组件', link: '/guide/advanced/custom-components' },
-          ]
-        }
-      ],
 
       // 示例与教程
       '/guide/examples/': [
         {
           text: '示例与教程',
           items: [
-            { text: '客服智能体', link: '/guide/examples/customer-service' },
-            { text: '图片识别智能体', link: '/guide/examples/image-recognition' },
+            { text: '分析项目代码', link: '/guide/examples/code-analysis' },
+            { text: '浏览器搜索', link: '/guide/examples/browser-search' },
             { text: '自动化任务', link: '/guide/examples/automation' },
             { text: '浏览器自动化', link: '/guide/examples/browser-automation' },
           ]

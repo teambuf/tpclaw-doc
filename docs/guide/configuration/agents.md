@@ -264,7 +264,7 @@ data/agents/
       "type": "builtin",
       "name": "skill",
       "config": {
-        "userDirs": ["${global.root_dir}/workspace/skills"]
+        "localDirs": ["${global.root_dir}/workspace/skills"]
       }
     },
     {

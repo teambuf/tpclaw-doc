@@ -118,7 +118,7 @@ version: '3.8'
 
 services:
   tpclaw:
-    image: rulego/tpclaw:latest
+    image: teambuf/tpclaw:latest
     deploy:
       replicas: 2
       resources:

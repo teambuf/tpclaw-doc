@@ -459,7 +459,7 @@ GET /api/v1/skills
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `agentId` | string | - | 智能体 ID |
-| `scope` | string | all | 范围：all, global, personal |
+| `scope` | string | all | 范围：all, global, local |
 | `page` | int | 1 | 页码 |
 | `size` | int | 20 | 每页数量 |
 
@@ -516,7 +516,7 @@ Content-Type: application/json
 
 {
   "name": "source-skill",
-  "targetScope": "personal",
+  "targetScope": "local",
   "newName": "copied-skill"
 }
 ```

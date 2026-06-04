@@ -2,195 +2,90 @@
 
 本文档介绍 TPCLAW 的系统架构和核心组件。
 
-## 整体架构
+## 技术栈分层
+
+TPCLAW 采用三层架构，基于 [RuleGo AI 智能体开发框架](https://rulego.cc/pages/ai-agent-overview/) 构建：
 
 ```mermaid
 graph TB
-    subgraph "用户接入层"
-        U1[Web 控制台]
-        U2[CLI 命令行]
-        U3[IM 通道]
-        U4[API 调用]
+    subgraph "应用层 — TPCLAW"
+        A1["Web 管理界面"]
+        A2["IM 通道适配器<br/>飞书 / 钉钉 / 企微 / Telegram"]
+        A3["自定义切面<br/>状态追踪 / 命令拦截 / 渠道感知"]
+        A4["智能体管理 / 工作区 / 技能 / 心跳调度"]
     end
 
-    subgraph "网关层"
-        G1[HTTP Server]
-        G2[WebSocket Server]
-        G3[通道适配器]
+    subgraph "框架层 — rulego-components-ai"
+        B1["Agent 模块<br/>ReactAgentNode<br/>AgentAspectExecutor<br/>DynamicModelWrapper"]
+        B2["Tool 模块<br/>ToolRegistry<br/>VisualToolWrapper<br/>RuleGoTool"]
+        B3["Aspect 模块<br/>AspectManager<br/>SessionAspect<br/>VizAspect"]
+        B4["Session 模块<br/>SessionManager<br/>SessionStorage<br/>CompactionConfig"]
     end
 
-    subgraph "核心层"
-        C1[规则引擎]
-        C2[智能体编排器]
-        C3[会话管理器]
-        C4[工具管理器]
+    subgraph "引擎层"
+        C1["RuleGo 规则引擎<br/>规则链执行 / 节点管理 / 消息流转"]
+        C2["Eino AI<br/>ChatModel / ReAct Agent / Schema"]
     end
 
-    subgraph "服务层"
-        S1[LLM 服务]
-        S2[记忆服务]
-        S3[事件服务]
-        S4[任务调度]
-    end
-
-    subgraph "存储层"
-        D1[文件存储]
-        D2[会话存储]
-        D3[向量数据库]
-    end
-
-    subgraph "外部服务"
-        E1[OpenAI/智谱/阿里云]
-        E2[Ollama]
-        E3[飞书/钉钉/企业微信]
-    end
-
-    U1 --> G1
-    U2 --> G1
-    U3 --> G3
-    U4 --> G1
-
-    G1 --> C1
-    G2 --> C1
-    G3 --> C1
-
-    C1 --> C2
-    C2 --> C3
-    C2 --> C4
-
-    C2 --> S1
-    C2 --> S2
-    C1 --> S3
-    C1 --> S4
-
-    S2 --> D1
-    C3 --> D2
-    S1 --> D3
-
-    S1 --> E1
-    S1 --> E2
-    G3 --> E3
+    A1 --> B1
+    A2 --> B1
+    A3 --> B3
+    A4 --> B1
+    B1 --> C1
+    B1 --> C2
+    B2 --> C1
+    B3 --> B1
+    B4 --> B3
 ```
 
-## 核心组件
-
-### 1. 规则引擎 (RuleGo)
-
-规则引擎是 TPCLAW 的核心，负责：
-- 加载和管理规则链
-- 执行节点逻辑
-- 管理节点之间的连接
-- 处理消息路由
-
-```go
-// 规则引擎初始化
-config := rulego.NewConfig()
-ruleEngine, _ := rulego.New("default", []byte(ruleChainJson), rulego.WithConfig(config))
-
-// 执行规则链
-ruleEngine.OnMsg(msg, ctx)
-```
-
-### 2. 智能体编排器
-
-智能体编排器负责：
-- 管理智能体生命周期
-- 协调多智能体协作
-- 处理工具调用
-- 管理 LLM 交互
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Orchestrator
-    participant MainAgent
-    participant SubAgent
-    participant LLM
-
-    User->>Orchestrator: 发送消息
-    Orchestrator->>MainAgent: 路由到主智能体
-    MainAgent->>LLM: 请求处理
-    LLM->>MainAgent: 返回响应（需调用子智能体）
-    MainAgent->>SubAgent: 调用子智能体
-    SubAgent->>LLM: 子智能体请求
-    LLM->>SubAgent: 子智能体响应
-    SubAgent->>MainAgent: 返回结果
-    MainAgent->>Orchestrator: 最终响应
-    Orchestrator->>User: 返回结果
-```
-
-### 3. 会话管理器
-
-会话管理器负责：
-- 会话创建和销毁
-- 上下文维护
-- 历史记录管理
-- 会话压缩
-
-```go
-// 会话存储接口
-type SessionStorage interface {
-    Save(sessionId string, messages []Message) error
-    Load(sessionId string) ([]Message, error)
-    Delete(sessionId string) error
-}
-```
-
-### 4. 工具管理器
-
-工具管理器负责：
-- 工具注册和发现
-- 工具调用执行
-- 权限控制
-- 结果处理
-
-```mermaid
-graph LR
-    subgraph "工具管理器"
-        A[工具注册表]
-        B[调用处理器]
-        C[权限检查器]
-    end
-
-    A --> D[内置工具]
-    A --> E[自定义工具]
-    A --> F[MCP 工具]
-
-    B --> G[执行器]
-    C --> H[权限配置]
-
-    G --> I[返回结果]
-```
+| 层级 | 职责 | 代表组件 |
+|------|------|----------|
+| **应用层** | Web UI、IM 通道接入、智能体管理、心跳调度 | TPCLAW |
+| **框架层** | 智能体生命周期管理、工具调度、切面编排、会话管理 | rulego-components-ai |
+| **引擎层** | 规则链执行引擎、LLM 调用与 Schema | RuleGo、Eino |
 
 ## 数据流
 
 ### 消息处理流程
 
+以下展示一次完整的智能体请求处理流程：
+
 ```mermaid
 sequenceDiagram
-    participant Channel
-    participant Adapter
-    participant RuleEngine
-    participant Agent
-    participant Tool
-    participant LLM
+    participant Channel as IM/WebSocket/API
+    participant Adapter as 通道适配器
+    participant RuleGo as RuleGo 规则引擎
+    participant Agent as ReactAgentNode
+    participant Aspect as AspectExecutor
+    participant LLM as ChatModel
+    participant Tool as VisualToolWrapper
 
     Channel->>Adapter: 接收消息
     Adapter->>Adapter: 解析和转换
-    Adapter->>RuleEngine: 发送到规则链
-    RuleEngine->>Agent: 执行智能体节点
-    Agent->>LLM: 调用 LLM
+    Adapter->>RuleGo: 发送到规则链
+    RuleGo->>Agent: OnMsg(ctx, msg)
+    Agent->>Agent: 转换输入、处理图片
+    Agent->>Aspect: ExecuteStart<br/>(SessionAspect: 初始化会话)
+
+    Aspect->>Aspect: ExecuteBefore<br/>(SessionAspect: 加载历史)
+    Aspect->>Aspect: ExecuteAround<br/>(CommandAspect: 拦截命令)
+
+    Aspect->>LLM: Generate 或 Stream（ReAct 推理）
 
     alt 需要工具调用
-        LLM->>Agent: 返回工具调用请求
-        Agent->>Tool: 执行工具
-        Tool->>Agent: 返回结果
-        Agent->>LLM: 继续处理
+        LLM-->>Aspect: 返回 ToolCall
+        Aspect->>Tool: BeforeToolCall / 执行工具 / AfterToolCall
+        Tool->>Aspect: 返回工具结果
+        Aspect->>LLM: 继续推理（携带工具结果）
     end
 
-    LLM->>Agent: 返回响应
-    Agent->>RuleEngine: 节点完成
-    RuleEngine->>Adapter: 返回结果
+    LLM-->>Aspect: 返回最终回答
+    Aspect->>Aspect: ExecuteAfter<br/>(SessionAspect: 保存历史)
+    Aspect->>Aspect: ExecuteCompleted<br/>(VizAspect: 发送完成事件)
+
+    Aspect-->>Agent: 返回 AgentOutput
+    Agent-->>RuleGo: TellSuccess/TellNext
+    RuleGo-->>Adapter: 返回结果
     Adapter->>Channel: 发送响应
 ```
 
@@ -198,129 +93,56 @@ sequenceDiagram
 
 ```
 tpclaw/
-├── cmd/                          # 应用入口
-│   ├── cli/                      # CLI 工具
-│   │   ├── main.go
-│   │   └── commands/             # Cobra 命令
-│   └── server/                   # HTTP 服务
-│       └── main.go
+├── cmd/
+│   └── tpclaw/                    # 应用入口
 │
-├── internal/                     # 内部包
-│   ├── api/                      # HTTP API
-│   │   └── handler/              # 请求处理器
-│   ├── command/                  # 命令处理框架
-│   ├── components/               # 组件注册
-│   │   ├── ai/                   # AI 组件
-│   │   └── im/                   # IM 组件
-│   ├── config/                   # 配置管理
-│   ├── domain/                   # 领域模型
-│   ├── processor/                # 消息处理器
-│   ├── service/                  # 业务服务
-│   └── session/                  # 会话管理
+├── internal/                      # 内部包
+│   ├── api/                       # HTTP API + WebSocket
+│   ├── app/                       # 应用初始化
+│   ├── aspect/                    # 自定义切面（状态追踪、命令拦截等）
+│   ├── command/                   # 斜杠命令框架
+│   ├── components/                # 组件注册
+│   ├── config/                    # 配置管理
+│   ├── domain/                    # 领域模型
+│   ├── embed/                     # 嵌入资源
+│   ├── logger/                    # 日志
+│   ├── processor/                 # 消息处理器
+│   ├── service/                   # 业务服务
+│   ├── session/                   # 会话管理
+│   └── upgrade/                   # 自动升级
 │
-├── configs/                      # 配置文件
+├── configs/                       # 配置文件
 │   └── config.yaml
 │
-├── data/                         # 数据目录
-│   ├── agents/                   # 智能体配置
-│   └── sessions/                 # 会话数据
+├── data/                          # 数据目录
+│   ├── agents/                    # 智能体配置
+│   └── sessions/                  # 会话数据
 │
-└── web/                          # Web 前端
+├── plugins/                       # 插件目录
+│
+├── scripts/                       # 脚本
+│   └── install.sh                 # Linux 安装脚本
+│
+└── web/                           # Web 前端（Vue 3）
     └── src/
 ```
 
-## 组件依赖
+## 核心服务
 
-```mermaid
-graph BT
-    subgraph "应用层"
-        A1[CLI]
-        A2[Server]
-    end
-
-    subgraph "服务层"
-        S1[AgentService]
-        S2[RuleService]
-        S3[SkillService]
-        S4[IMService]
-    end
-
-    subgraph "组件层"
-        C1[AI Components]
-        C2[IM Components]
-    end
-
-    subgraph "核心层"
-        R1[RuleGo Engine]
-        R2[Session Manager]
-    end
-
-    A1 --> S1
-    A1 --> S2
-    A2 --> S1
-    A2 --> S4
-
-    S1 --> C1
-    S2 --> R1
-    S3 --> C1
-    S4 --> C2
-
-    C1 --> R1
-    R1 --> R2
-```
-
-## 部署架构
-
-### 单机部署
-
-```mermaid
-graph TB
-    subgraph "单机部署"
-        A[TPCLAW 进程]
-        B[文件存储]
-        C[本地 LLM]
-    end
-
-    A --> B
-    A --> C
-```
-
-### 分布式部署
-
-```mermaid
-graph TB
-    subgraph "负载均衡"
-        LB[Nginx/ALB]
-    end
-
-    subgraph "应用集群"
-        A1[TPCLAW Node 1]
-        A2[TPCLAW Node 2]
-        A3[TPCLAW Node 3]
-    end
-
-    subgraph "共享存储"
-        S1[Redis]
-        S2[MinIO/OSS]
-        S3[Milvus]
-    end
-
-    LB --> A1
-    LB --> A2
-    LB --> A3
-
-    A1 --> S1
-    A2 --> S1
-    A3 --> S1
-
-    A1 --> S2
-    A2 --> S2
-    A3 --> S2
-
-    A1 --> S3
-    A2 --> S3
-    A3 --> S3
-```
+| 服务 | 职责 |
+|------|------|
+| **AgentService** | 智能体 CRUD、配置管理、模板管理 |
+| **RuleService** | 规则链管理、热加载 |
+| **RuleExecutor** | 规则链执行，桥接 RuleGo 引擎 |
+| **IMService** | IM 通道消息收发、通道注册 |
+| **SessionService** | 会话存储、历史管理、压缩 |
+| **WorkspaceService** | 工作区文件管理 |
+| **SkillService** | 技能管理、ZIP 上传 |
+| **CronService** | 定时任务调度（基于规则链） |
+| **HeartbeatService** | 心跳任务、活跃时间控制 |
+| **ModelService** | LLM 供应商管理、模型配置 |
+| **CommandService** | 斜杠命令注册与分发 |
+| **EventHub** | 事件总线、可视化推送 |
 
 ## 扩展点
 
@@ -328,14 +150,15 @@ TPCLAW 提供了多个扩展点：
 
 | 扩展点 | 说明 | 方式 |
 |--------|------|------|
-| 自定义节点 | 添加新的处理节点 | 实现 Node 接口 |
-| 自定义工具 | 添加新的工具 | 实现 Tool 接口 |
+| 自定义节点 | 添加新的处理节点 | 实现 Node 接口，通过 `rulego.Register()` 注册 |
+| 自定义工具 | 添加新的工具 | 通过规则链工具、MCP 协议或技能文件 |
 | 自定义通道 | 添加新的 IM 通道 | 实现 Channel 接口 |
-| 切面编程 | 添加横切关注点 | 注册 Aspect |
-| 事件监听 | 监听系统事件 | 订阅 Event |
+| 切面编程 | 添加横切关注点 | 注册 Aspect 到 AspectManager |
+| 技能扩展 | 定义可复用能力 | 编写 Markdown 技能文件 |
 
 ## 下一步
 
-- [与其他方案对比](/guide/introduction/comparison) - 了解 TPCLAW 的优势
+- [核心概念](/guide/introduction/core-concepts) - 了解 TPCLAW 的核心概念
 - [安装指南](/guide/getting-started/installation) - 开始安装
 - [核心功能](/guide/core-features/agents) - 了解核心功能
+- [RuleGo AI 智能体框架架构](https://rulego.cc/pages/ai-agent-architecture/) - 深入了解底层框架架构

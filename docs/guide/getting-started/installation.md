@@ -6,8 +6,8 @@
 
 | 方式 | 适用场景 | 难度 |
 |------|----------|------|
-| 二进制下载 | 生产环境、快速部署 | 简单 |
-| 源码编译 | 开发调试、自定义构建 | 中等 |
+| [二进制下载](#方式一-二进制下载) | 生产环境、快速部署 | 简单 |
+| [源码编译](#方式二-源码编译) | 开发调试、自定义构建 | 中等 |
 
 ---
 
@@ -47,9 +47,8 @@ Windows 版本为绿色免安装版本，解压后即可运行。
    ├── config.yaml.example  # 配置文件示例
    ├── agents/              # 智能体配置目录
    ├── skills/              # 技能目录
-   ├── workspace/           # 工作空间目录
+   ├── workspace/           # 主智能体工作空间目录
    ├── logs/                # 日志目录
-   └── chrome_data/         # Chrome 数据目录
    ```
 
 3. **访问服务**
@@ -241,45 +240,6 @@ go install ./cmd/tpclaw
 
 # 或手动复制
 sudo cp tpclaw /usr/local/bin/
-```
-
----
-
-## 方式四：包管理器安装
-
-### Homebrew (macOS)
-
-```bash
-# 添加 tap
-brew tap rulego/tap
-
-# 安装
-brew install tpclaw
-
-# 更新
-brew upgrade tpclaw
-```
-
-### Scoop (Windows)
-
-```powershell
-# 添加 bucket
-scoop bucket add rulego https://github.com/rulego/scoop-bucket
-
-# 安装
-scoop install tpclaw
-```
-
-### APT (Debian/Ubuntu)
-
-```bash
-# 添加仓库
-curl -fsSL https://apt.rulego.com/gpg.key | sudo gpg --dearmor -o /usr/share/keyrings/rulego.gpg
-echo "deb [signed-by=/usr/share/keyrings/rulego.gpg] https://apt.rulego.com stable main" | sudo tee /etc/apt/sources.list.d/rulego.list
-
-# 更新并安装
-sudo apt update
-sudo apt install tpclaw
 ```
 
 ---
