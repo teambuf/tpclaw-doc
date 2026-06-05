@@ -41,7 +41,7 @@ export default withMermaid(defineConfig({
       },
       { text: '下载', link: '/guide/getting-started/installation' },
       { text: '社区', link: '/guide/community' },
-      { text: 'GitHub', link: 'https://github.com/teambuf/tpclaw' }
+      { text: 'Gitee', link: 'https://gitee.com/rulego/tpclaw' }
     ],
 
     sidebar: {
@@ -213,7 +213,7 @@ export default withMermaid(defineConfig({
     },
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/teambuf/tpclaw' }
+      { icon: 'github', link: 'https://gitee.com/rulego/tpclaw' }
     ],
 
     footer: {

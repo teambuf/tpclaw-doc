@@ -16,8 +16,8 @@ hero:
       text: 了解更多
       link: /guide/introduction/what-is-tpclaw
     - theme: alt
-      text: GitHub
-      link: https://github.com/teambuf/tpclaw
+      text: Gitee
+      link: https://gitee.com/rulego/tpclaw
 
 features:
   - icon: 🤖
