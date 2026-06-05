@@ -65,7 +65,7 @@ export default withMermaid(defineConfig({
           items: [
             { text: '环境要求', link: '/guide/getting-started/requirements' },
             { text: '安装', link: '/guide/getting-started/installation' },
-            { text: '5分钟入门', link: '/guide/getting-started/quickstart' },
+            { text: '3分钟入门', link: '/guide/getting-started/quickstart' },
           ]
         }
       ],
