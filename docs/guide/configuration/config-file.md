@@ -98,6 +98,16 @@ security:
   defaultUsername: "admin"
   users:
     admin: "admin"                      # 用户名: 密码
+  # 限流配置
+  rate_limit:
+    enabled: true
+    default:
+      rps: 30                           # 每秒请求数
+      burst: 60                         # 突发容量
+    rules:
+      auth:                             # 按路径关键字匹配（含 "auth" 的路径）
+        rps: 3
+        burst: 5
 
 # 模型配置
 models:
@@ -180,9 +190,21 @@ agents:
     # 会话压缩配置
     compaction:
       mode: "safeguard"                 # safeguard, auto, off
+      strategy: "summary"              # summary, sliding_window, hybrid
       keep_recent_count: 10
       target_tokens: 80000
       memory_flush: true
+
+    # 工具安全策略（默认关闭）
+    toolSecurity:
+      enable: false
+      mode: "deny"                      # deny（黑名单）或 allow（白名单）
+      denyTools: ""                     # 拦截的工具名称（逗号分隔，支持 * 通配符）
+      allowTools: ""                    # 允许的工具名称（逗号分隔，支持 * 通配符）
+      deniedTypes: ""                   # 拦截的工具类型: builtin, mcp, rulechain, subagent
+      cmdDenyExtra: ""                  # bash 工具额外命令黑名单（逗号分隔）
+      allowPaths: ""                    # 文件路径白名单（逗号分隔）
+      denyPaths: ""                     # 文件路径黑名单（逗号分隔），优先级高于 allowPaths
 
     # 全局技能目录
     global_skills_dir: "skills"
@@ -336,6 +358,19 @@ bindings:
 | `jwtIssuer` | string | `tpclaw` | JWT 签发者 |
 | `defaultUsername` | string | `admin` | 默认用户名 |
 | `users` | map | - | 用户列表，格式：`用户名: 密码` |
+| `rate_limit.enabled` | bool | `false` | 是否启用限流 |
+| `rate_limit.default.rps` | float | `30` | 默认每秒请求数 |
+| `rate_limit.default.burst` | int | `60` | 默认突发容量 |
+| `rate_limit.rules` | map | - | 按路径关键字匹配的限流规则，key 为路径关键字 |
+
+### 用户角色
+
+认证通过后，系统自动分配角色：
+
+| 角色 | 说明 |
+|------|------|
+| `admin` | 用户名为 `admin` 的用户自动获得管理员角色，拥有所有权限 |
+| `user` | 其他用户获得普通用户角色，部分管理操作（如技能上传、删除）需要管理员权限 |
 
 ### agents 智能体配置
 
@@ -348,6 +383,9 @@ bindings:
 | `defaults.session.enabled` | bool | `true` | 是否启用会话 |
 | `defaults.session.default_scope` | string | `per_peer` | 会话作用域 |
 | `defaults.compaction.mode` | string | `safeguard` | 压缩模式 |
+| `defaults.compaction.strategy` | string | `summary` | 压缩策略：summary（LLM 摘要）、sliding_window（滑动窗口）、hybrid（混合） |
+| `defaults.toolSecurity.enable` | bool | `false` | 是否启用工具安全拦截 |
+| `defaults.toolSecurity.mode` | string | `deny` | 拦截模式：deny（黑名单）或 allow（白名单） |
 | `defaults.media.enable` | bool | `true` | 是否启用媒体存储 |
 
 ### channels 通道配置

@@ -41,9 +41,21 @@ agents:
     # 压缩配置
     compaction:
       mode: "safeguard"         # safeguard | auto | off
+      strategy: "summary"      # summary | sliding_window | hybrid
       keep_recent_count: 10     # 保留最近消息数
       target_tokens: 80000      # 目标 token 数
       memory_flush: true        # 压缩时刷新内存
+
+    # 工具安全策略（默认关闭）
+    toolSecurity:
+      enable: false
+      mode: "deny"              # deny（黑名单）或 allow（白名单）
+      denyTools: ""             # 拦截的工具名称（逗号分隔，支持 * 通配符）
+      allowTools: ""            # 允许的工具名称（逗号分隔，支持 * 通配符）
+      deniedTypes: ""           # 拦截的工具类型: builtin, mcp, rulechain, subagent
+      cmdDenyExtra: ""          # bash 工具额外命令黑名单（逗号分隔）
+      allowPaths: ""            # 文件路径白名单（逗号分隔）
+      denyPaths: ""             # 文件路径黑名单（逗号分隔），优先级高于 allowPaths
 
     # 技能目录
     global_skills_dir: "skills"
@@ -72,6 +84,9 @@ agents:
 | `heartbeat.active_hours` | 激活时间段，支持跨天（如 22:00-06:00） |
 | `session.default_scope` | 会话作用域：`per_peer`(按用户)、`per_channel`(按群)、`global`(全局) |
 | `compaction.mode` | `safeguard`(智能防护)、`auto`(全自动)、`off`(关闭) |
+| `compaction.strategy` | 压缩策略：`summary`(LLM 摘要，默认)、`sliding_window`(滑动窗口，不需要 LLM)、`hybrid`(混合) |
+| `toolSecurity.enable` | 是否启用工具安全拦截，默认 `false` |
+| `toolSecurity.mode` | 拦截模式：`deny`(黑名单，命中则拦截) 或 `allow`(白名单，不在列表则拦截) |
 
 ### 会话作用域
 
@@ -88,6 +103,52 @@ agents:
 | `safeguard` | 智能防护模式，在上下文接近限制时自动压缩 |
 | `auto` | 全自动模式，更激进的压缩策略 |
 | `off` | 关闭自动压缩，需手动使用 `/compact` 命令 |
+
+### 压缩策略
+
+| 策略 | 说明 |
+|------|------|
+| `summary` | LLM 摘要压缩（默认），使用 LLM 对历史消息生成摘要，保留语义信息 |
+| `sliding_window` | 滑动窗口压缩，直接截断旧消息，不需要 LLM，适合低成本场景 |
+| `hybrid` | 混合策略，对旧消息使用摘要压缩，最近消息保持原样 |
+
+### 工具安全策略
+
+通过 `toolSecurity` 配置控制智能体可使用的工具范围：
+
+```yaml
+agents:
+  defaults:
+    toolSecurity:
+      enable: true
+      mode: "deny"
+      denyTools: "bash,edit"           # 拦截 bash 和 edit 工具
+      deniedTypes: "mcp"               # 拦截所有 MCP 工具
+      cmdDenyExtra: "rm,sudo"          # bash 工具额外禁止 rm 和 sudo
+      denyPaths: "/etc,/var"           # 禁止访问 /etc 和 /var 目录
+```
+
+```yaml
+# 白名单模式示例
+agents:
+  defaults:
+    toolSecurity:
+      enable: true
+      mode: "allow"
+      allowTools: "read,skill"         # 只允许 read 和 skill 工具
+      allowPaths: "/data/workspace"    # 只允许访问工作空间目录
+```
+
+| 配置项 | 说明 |
+|-------|------|
+| `enable` | 是否启用，默认 `false` |
+| `mode` | `deny`（黑名单）或 `allow`（白名单） |
+| `denyTools` | 黑名单模式下拦截的工具名称，逗号分隔，支持 `*` 通配符（如 `bash*`） |
+| `allowTools` | 白名单模式下允许的工具名称，逗号分隔，支持 `*` 通配符 |
+| `deniedTypes` | 拦截的工具类型：`builtin`、`mcp`、`rulechain`、`subagent` |
+| `cmdDenyExtra` | bash 工具额外命令黑名单，在工具自身安全检查之上追加 |
+| `allowPaths` | 文件路径白名单（read/write/edit 工具），为空不限制 |
+| `denyPaths` | 文件路径黑名单，优先级高于 `allowPaths` |
 
 ## 智能体定义文件
 
