@@ -27,6 +27,7 @@
   "author": "TeamBuf",
   "license": "Apache-2.0",
   "dependencies": {
+    "@vercel/analytics": "^2.0.1",
     "vitepress-plugin-mermaid": "^2.0.17"
   }
 }

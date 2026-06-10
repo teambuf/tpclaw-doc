@@ -14,6 +14,7 @@ export default withMermaid(defineConfig({
     ['meta', { name: 'og:type', content: 'website' }],
     ['meta', { name: 'og:title', content: 'TPCLAW | AI Agent Platform' }],
     ['meta', { name: 'og:description', content: '基于 RuleGo 规则引擎的 AI 智能体平台，支持多智能体协作、工具调用、IM 通道集成' }],
+    ['script', {}, `var _hmt = _hmt || [];(function() {var hm = document.createElement("script");hm.src = "https://hm.baidu.com/hm.js?f52435c5ea41216eda33899dd473919c";var s = document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm, s);})();`],
   ],
 
   themeConfig: {
