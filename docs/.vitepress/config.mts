@@ -105,6 +105,7 @@ export default withMermaid(defineConfig({
         {
           text: '内置技能',
           items: [
+            { text: 'evolve - 技能进化', link: '/guide/tools/evolve' },
             { text: 'agent-message - 智能体消息', link: '/guide/tools/agent-message' },
             { text: 'message-send - 消息发送', link: '/guide/tools/message-send' },
             { text: 'cron-task - 定时任务', link: '/guide/tools/cron-task' },
