@@ -38,6 +38,18 @@ features:
   - icon: 🧩
     title: 技能无限扩展
     details: 兼容 OpenClaw、Claude Code 等市面上所有 Markdown 格式技能，直接导入即可使用
+
+  # 首页公告（置空 notice 或删除该字段则不显示公告）
+notice:
+  version: v1.0.10
+  date: 2026-06-23
+  title: 📢 TPCLAW v1.0.10 发布！
+  items:
+    - 供应商支持多实例配置，新增自定义（OpenAI 兼容）类型
+    - 聊天界面实时显示 token 使用率
+    - 技能管理增强：权限适配 + 文件浏览器查看技能附属文件
+  link: /guide/getting-started/installation
+  linkText: 立即下载
 ---
 
 <style>
