@@ -105,7 +105,7 @@ agents:
       default_scope: "per_peer"
     compaction:
       mode: "safeguard"
-      target_tokens: 80000
+      target_tokens_percent: 70
       memory_flush: true
 ```
 

@@ -69,4 +69,3 @@ AGENTS.md 定义：
 
 ## 相关文档
 - [工作空间结构](/guide/workspace/structure) - 目录结构
-- [多智能体协作](/guide/advanced/multi-agent) - 协作详细说明

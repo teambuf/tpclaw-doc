@@ -17,7 +17,8 @@
   "name": "write",
   "description": "写入内容到文件",
   "config": {
-    "workDir": "${global.root_dir}/workspace"
+    "workDir": "${global.root_dir}/workspace",
+    "maxFileSize": 10485760
   }
 }
 ```
@@ -26,65 +27,59 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `workDir` | string | - | 工作目录，限制文件访问范围 |
-| `createDirs` | bool | true | 自动创建父目录 |
-| `backup` | bool | true | 覆盖前是否备份 |
+| `workDir` | string | `.` | 工作目录，限制文件访问范围 |
+| `maxFileSize` | int | 10485760 (10MB) | 单次写入最大字节数，0 表示不限制 |
 
 ## 操作类型
 
-### write - 写入/覆盖文件
+### file - 写入文件
 
-写入内容到文件，如果文件存在则覆盖。
+写入内容到文件，通过 `mode` 参数指定写入模式。
 
 **参数**：
 ```json
 {
-  "operation": "write",
+  "operation": "file",
   "path": "path/to/file.txt",
-  "content": "文件内容"
+  "content": "文件内容",
+  "mode": "create"
 }
 ```
 
-**示例**：
+**写入模式**：
+| mode | 说明 |
+|------|------|
+| `create` | 创建新文件，如果文件已存在则报错（默认） |
+| `overwrite` | 覆盖现有文件 |
+| `append` | 追加内容到文件末尾 |
+
+**示例 - 创建新文件**：
 ```json
 {
-  "operation": "write",
+  "operation": "file",
   "path": "hello.txt",
-  "content": "Hello, World!"
+  "content": "Hello, World!",
+  "mode": "create"
 }
 ```
 
-### append - 追加内容
-
-追加内容到文件末尾，如果文件不存在则创建。
-
-**参数**：
+**示例 - 覆盖文件**：
 ```json
 {
-  "operation": "append",
-  "path": "path/to/file.txt",
-  "content": "追加的内容"
+  "operation": "file",
+  "path": "hello.txt",
+  "content": "New content",
+  "mode": "overwrite"
 }
 ```
 
-**示例**：
+**示例 - 追加内容**：
 ```json
 {
-  "operation": "append",
+  "operation": "file",
   "path": "log.txt",
-  "content": "\n2024-01-15: 新的日志条目"
-}
-```
-
-### create - 创建文件
-
-创建空文件，如果文件已存在则报错。
-
-**参数**：
-```json
-{
-  "operation": "create",
-  "path": "path/to/newfile.txt"
+  "content": "\n2024-01-15: 新的日志条目",
+  "mode": "append"
 }
 ```
 
@@ -97,9 +92,10 @@
 
 智能体调用:
 {
-  "operation": "write",
+  "operation": "file",
   "path": "README.md",
-  "content": "# 项目名称\n\n项目描述..."
+  "content": "# 项目名称\n\n项目描述...",
+  "mode": "create"
 }
 ```
 
@@ -110,22 +106,24 @@
 
 智能体调用:
 {
-  "operation": "append",
+  "operation": "file",
   "path": "workspace/log.md",
-  "content": "\n## 2024-01-15\n完成了文档编写任务"
+  "content": "\n## 2024-01-15\n完成了文档编写任务",
+  "mode": "append"
 }
 ```
 
-### 创建目录结构
+### 覆盖文件
 
 ```
-用户: 创建 src/components 目录结构
+用户: 更新配置文件
 
 智能体调用:
 {
-  "operation": "write",
-  "path": "src/components/.gitkeep",
-  "content": ""
+  "operation": "file",
+  "path": "config.yaml",
+  "content": "server:\n  port: 8080",
+  "mode": "overwrite"
 }
 ```
 
@@ -135,35 +133,17 @@
 
 只能写入 `workDir` 配置的目录及其子目录。
 
-### 文件类型限制
+### 文件大小限制
 
-可以在配置中限制允许写入的文件类型：
-
-```json
-{
-  "config": {
-    "workDir": "${global.root_dir}/workspace",
-    "allowedExtensions": [".md", ".txt", ".json", ".yaml"]
-  }
-}
-```
-
-### 备份机制
-
-启用备份时，覆盖文件前会自动创建备份：
-
-```
-原文件: document.md
-备份: document.md.bak.20240115103000
-```
+单次写入内容不能超过 `maxFileSize` 配置的大小（默认 10MB）。
 
 ## 错误处理
 
 | 错误 | 原因 | 解决方案 |
 |------|------|----------|
 | `path outside workdir` | 路径在工作目录外 | 使用工作目录内的路径 |
-| `file already exists` | create 时文件已存在 | 使用 write 操作覆盖 |
-| `directory not found` | 父目录不存在 | 启用 createDirs 或先创建目录 |
+| `file already exists` | create 模式时文件已存在 | 使用 overwrite 模式覆盖 |
+| `content too large` | 内容超过大小限制 | 减小写入内容或调整 maxFileSize |
 | `permission denied` | 无写入权限 | 检查文件权限 |
 
 ## 最佳实践
@@ -174,31 +154,26 @@
 
 ```json
 // 1. 先读取确认
-{"operation": "read", "path": "important.md"}
+{"operation": "file", "path": "important.md"}
 
 // 2. 确认后再写入
-{"operation": "write", "path": "important.md", "content": "新内容"}
+{"operation": "file", "path": "important.md", "content": "新内容", "mode": "overwrite"}
 ```
 
 ### 2. 使用追加模式记录日志
 
 ```json
 {
-  "operation": "append",
+  "operation": "file",
   "path": "MEMORY.md",
-  "content": "\n## 2024-01-15\n今天学习了新技能..."
+  "content": "\n## 2024-01-15\n今天学习了新技能...",
+  "mode": "append"
 }
 ```
 
-### 3. 创建目录时添加 .gitkeep
+### 3. 使用原子写入
 
-```json
-{
-  "operation": "write",
-  "path": "new/directory/.gitkeep",
-  "content": ""
-}
-```
+write 工具使用原子写入（先写入临时文件再重命名），确保写入过程中断不会损坏原有文件。
 
 ## 相关工具
 

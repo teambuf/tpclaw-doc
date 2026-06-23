@@ -199,22 +199,6 @@ dir /a
 
 输出超过 65536 字节会被截断。
 
-## 环境变量
-
-可以在配置中设置环境变量：
-
-```json
-{
-  "config": {
-    "env": {
-      "PATH": "/usr/local/bin:/usr/bin",
-      "HOME": "/home/user",
-      "GOPATH": "/go"
-    }
-  }
-}
-```
-
 ## 错误处理
 
 | 错误 | 原因 | 解决方案 |

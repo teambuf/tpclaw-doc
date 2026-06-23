@@ -59,8 +59,8 @@ agents:
       max_messages: 200            # 最大消息数量
       max_token_count: 128000      # 最大 Token 数
       default_scope: "per_peer"    # 默认作用域
-      ttl: "24h"                   # 会话存活时间
-      idle_timeout: "30m"          # 空闲超时时间
+      ttl: "720h"                  # 会话存活时间（30 天）
+      idle_timeout: "1h"           # 空闲超时时间
 ```
 
 ### 配置项说明
@@ -72,8 +72,8 @@ agents:
 | `max_messages` | int | `200` | 单个会话最大消息数 |
 | `max_token_count` | int | `128000` | 单个会话最大 Token 数 |
 | `default_scope` | string | `per_peer` | 默认会话作用域 |
-| `ttl` | duration | `24h` | 会话存活时间 |
-| `idle_timeout` | duration | `30m` | 空闲超时（超时后可清理） |
+| `ttl` | duration | `720h` (30天) | 会话存活时间 |
+| `idle_timeout` | duration | `1h` | 空闲超时（超时后可清理） |
 
 ## 历史加载机制
 
@@ -150,9 +150,10 @@ agents:
   defaults:
     compaction:
       mode: "safeguard"           # 压缩模式
+      strategy: "summary"         # 压缩策略
       keep_recent_count: 10       # 保留最近 N 条消息
-      target_tokens: 76800        # 目标 Token 数（固定阈值）
-      target_tokens_percent: 60   # 目标 Token 百分比（基于模型上下文）
+      target_tokens: 0            # 目标 Token 数（固定阈值，0 表示不使用）
+      target_tokens_percent: 70   # 目标 Token 百分比（基于模型上下文，优先级高于 target_tokens）
       min_messages_to_compact: 20 # 最小压缩消息数
       memory_flush: true          # 压缩后刷新内存
 ```
@@ -162,11 +163,20 @@ agents:
 | 配置项 | 说明 |
 |--------|------|
 | `mode` | 压缩模式：`safeguard`（推荐）、`auto`、`off` |
+| `strategy` | 压缩策略：`summary`（LLM 摘要，默认）、`sliding_window`（滑动窗口）、`hybrid`（混合） |
 | `keep_recent_count` | 压缩时保留的最近消息数（不会被摘要） |
-| `target_tokens` | 压缩后的目标 Token 数 |
-| `target_tokens_percent` | 基于模型上下文窗口的百分比（如 60% 表示 128k 上下文压缩到 76.8k） |
+| `target_tokens` | 压缩后的目标 Token 数（固定阈值，0 表示不使用） |
+| `target_tokens_percent` | 基于模型上下文窗口的百分比（如 70% 表示 128k 上下文压缩到 89.6k），优先级高于 `target_tokens` |
 | `min_messages_to_compact` | 触发压缩的最小消息数，避免频繁压缩 |
 | `memory_flush` | 压缩后是否刷新内存中的会话缓存 |
+
+### 压缩策略
+
+| 策略 | 说明 | 适用场景 |
+|------|------|----------|
+| `summary` | 使用 LLM 对旧消息生成摘要，保留语义信息 | **推荐** - 需要保留对话上下文语义 |
+| `sliding_window` | 直接截断旧消息，保留最近 N 条 | 低成本场景，不需要 LLM 调用 |
+| `hybrid` | 对旧消息使用摘要，最近消息保持原样 | 平衡成本和效果 |
 
 ### 压缩流程
 
@@ -174,21 +184,28 @@ agents:
 flowchart TD
     A[新消息到达] --> B{检查是否需要压缩}
     B -->|不需要| C[保存消息]
-    B -->|需要| D[分割消息]
-    D --> E[保留最近 N 条]
-    D --> F[旧消息发送给 LLM]
-    F --> G[生成摘要]
-    G --> H[创建摘要消息]
-    H --> I[合并: 摘要 + 最近消息]
-    I --> J[更新存储]
-    J --> K[更新会话统计]
-    C --> L[返回]
-    K --> L
+    B -->|需要| D{检查压缩策略}
+    D -->|summary| E[保留最近 N 条]
+    D -->|sliding_window| F[直接截断旧消息]
+    D -->|hybrid| G[保留最近 N 条]
+    E --> H[旧消息发送给 LLM]
+    H --> I[生成摘要]
+    I --> J[创建摘要消息]
+    J --> K[合并: 摘要 + 最近消息]
+    G --> H
+    F --> L[保留最近消息]
+    K --> M[更新存储]
+    L --> M
+    M --> N[更新会话统计]
+    C --> O[返回]
+    N --> O
 ```
 
 ### 摘要生成
 
-压缩时使用独立的 LLM 调用生成摘要：
+#### summary 策略（默认）
+
+使用独立的 LLM 调用生成摘要：
 
 1. **独立上下文** - 摘要生成不污染主对话上下文
 2. **系统提示词** - 使用专门的提示词指导摘要格式
@@ -206,6 +223,24 @@ flowchart TD
   }
 }
 ```
+
+#### sliding_window 策略
+
+直接截断旧消息，只保留最近 N 条消息。不需要 LLM 调用，成本最低。
+
+**适用场景**：
+- 对话历史不重要，只需要最近的上下文
+- 需要降低成本（避免 LLM 调用）
+- 对话内容主要是工具调用结果
+
+#### hybrid 策略
+
+混合策略，对旧消息使用 LLM 摘要，最近消息保持原样。
+
+**优势**：
+- 最近的对话保持完整细节
+- 旧对话保留语义摘要
+- 平衡成本和效果
 
 ## 会话数据结构
 
@@ -319,8 +354,20 @@ func (a *SessionAspect) After(ctx context.Context, point *aspect.AgentPoint, inp
 # 推荐配置 - 平衡性能和上下文
 compaction:
   mode: "safeguard"
+  strategy: "summary"           # 使用 LLM 摘要保留语义
   keep_recent_count: 10
-  target_tokens_percent: 60
+  target_tokens_percent: 70
+  min_messages_to_compact: 20
+  memory_flush: true
+```
+
+**低成本配置**（不需要 LLM 调用）：
+```yaml
+compaction:
+  mode: "safeguard"
+  strategy: "sliding_window"    # 滑动窗口，直接截断
+  keep_recent_count: 10
+  target_tokens_percent: 70
   min_messages_to_compact: 20
 ```
 
@@ -343,4 +390,3 @@ session:
 
 - [智能体配置](/guide/configuration/agents) - 配置会话参数
 - [记忆系统](/guide/core-features/memory) - 记忆加载机制
-- [切面编程](/guide/advanced/aspect) - 自定义会话处理逻辑

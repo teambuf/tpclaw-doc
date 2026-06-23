@@ -106,7 +106,14 @@ graph TB
 | [edit](/guide/tools/edit) | 进化 | 文件编辑，支持搜索替换、插入删除 |
 | [bash](/guide/tools/bash) | 行动 | 执行 Shell 命令，与系统交互 |
 | [skill](/guide/tools/skill) | 学习 | 调用预定义技能，扩展专业能力 |
-| [browser-use](/guide/tools/browser-use) | 行动 | 浏览器自动化，网页导航与交互 |
+
+### 可选工具
+
+可选工具需要手动启用，进入「智能体管理」→ 编辑智能体 → 「工具」标签页勾选：
+
+| 工具 | 能力 | 说明 |
+|------|------|------|
+| [browser-use](/guide/tools/browser-use) | 行动 | 浏览器自动化，网页导航与交互（默认关闭） |
 
 ### 内置技能
 
@@ -293,20 +300,7 @@ parameters:
 技能执行步骤和说明...
 ```
 
-### 2. 自定义组件
-
-开发自定义工具组件（Go 语言）：
-
-```go
-func NewMyTool() component.Node {
-    return &MyTool{}
-}
-```
-
-详见 [自定义组件](/guide/advanced/custom-components)。
-
 ## 相关文档
 
 - [智能体配置](/guide/configuration/agents) - 智能体配置说明
 - [技能工具](/guide/tools/skill) - 技能详细说明
-- [自定义组件](/guide/advanced/custom-components) - 开发自定义工具

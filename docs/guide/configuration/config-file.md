@@ -7,11 +7,10 @@ TPCLAW 使用 YAML 格式的配置文件进行系统配置。
 TPCLAW 按以下优先级查找配置文件：
 
 1. 命令行参数指定的路径：`tpclaw --config /path/to/config.yaml`
-2. 环境变量指定的路径：`TPCLAW_CONFIG=/path/to/config.yaml`
-3. 二进制所在目录：`./config.yaml` 或 `./config.yml`
-4. 当前工作目录：`./config.yaml` 或 `./config.yml`
-5. configs 目录：`./configs/config.yaml` 或 `./configs/config.yml`
-6. 用户目录：`~/.tpclaw/config.yaml` 或 `~/.tpclaw/config.yml`
+2. 二进制所在目录：`./config.yaml` 或 `./config.yml`
+3. 当前工作目录：`./config.yaml` 或 `./config.yml`
+4. configs 目录：`./configs/config.yaml` 或 `./configs/config.yml`
+5. 用户目录：`~/.tpclaw/config.yaml` 或 `~/.tpclaw/config.yml`
 
 如果未找到配置文件，TPCLAW 会自动生成默认配置到当前目录。
 
@@ -31,9 +30,6 @@ api_key: "${OPENAI_API_KEY:-default-key}"
 
 | 变量名 | 说明 |
 |--------|------|
-| `TPCLAW_CONFIG` | 配置文件路径 |
-| `TPCLAW_APP_NAME` | 应用名称 |
-| `TPCLAW_API_KEY` | API 认证密钥 |
 | `OPENAI_API_KEY` | OpenAI API Key |
 | `ZHIPU_API_KEY` | 智谱 AI API Key |
 | `ALIYUN_API_KEY` | 阿里云 API Key |
@@ -97,7 +93,7 @@ security:
   jwtIssuer: "tpclaw"
   defaultUsername: "admin"
   users:
-    admin: "admin"                      # 用户名: 密码
+    admin: "admin!@#"                   # 用户名: 密码
   # 限流配置
   rate_limit:
     enabled: true
@@ -111,9 +107,9 @@ security:
 
 # 模型配置
 models:
-  default: "default"                    # 默认供应商名称
+  default: "aliyun_bailian_coding"      # 默认供应商名称
   providers:
-    default:
+    aliyun_bailian_coding:
       name: "智谱 Coding"
       base_url: "https://open.bigmodel.cn/api/coding/paas/v4"
       api_key: "${ZHIPU_API_KEY}"
@@ -192,7 +188,8 @@ agents:
       mode: "safeguard"                 # safeguard, auto, off
       strategy: "summary"              # summary, sliding_window, hybrid
       keep_recent_count: 10
-      target_tokens: 80000
+      target_tokens: 0                  # 固定阈值（0 表示不使用）
+      target_tokens_percent: 70         # 基于模型上下文的百分比（优先级高于 target_tokens）
       memory_flush: true
 
     # 工具安全策略（默认关闭）
@@ -298,6 +295,20 @@ bindings:
       default: true                     # 默认绑定
       channel: "feishu"
       account_id: "default"
+
+# 升级配置
+upgrade:
+  signature_verify: false               # 是否启用签名验证
+  backup_dir: ""                        # 备份目录（默认: {root_dir}/backups）
+  binary_path: "/usr/local/bin/tpclaw"  # 二进制文件路径
+  service_name: "tpclaw"                # systemd 服务名称
+  use_sudo: false                       # 是否使用 sudo 执行升级
+  # 自动升级配置
+  check_url: "https://claw.techphant.cn/release/tpclaw/version.json"  # 版本检查 URL
+  auto_check: true                      # 是否启用自动检查更新
+  auto_check_interval: 24               # 自动检查间隔（小时）
+  download_timeout: 300                 # 下载超时（秒）
+  download_dir: ""                      # 临时下载目录（默认: {root_dir}/tmp/upgrade）
 ```
 
 ## 配置项详解
@@ -384,6 +395,8 @@ bindings:
 | `defaults.session.default_scope` | string | `per_peer` | 会话作用域 |
 | `defaults.compaction.mode` | string | `safeguard` | 压缩模式 |
 | `defaults.compaction.strategy` | string | `summary` | 压缩策略：summary（LLM 摘要）、sliding_window（滑动窗口）、hybrid（混合） |
+| `defaults.compaction.target_tokens` | int | `0` | 固定 token 阈值（0 表示不使用） |
+| `defaults.compaction.target_tokens_percent` | int | `70` | 基于模型上下文的百分比（优先级高于 target_tokens） |
 | `defaults.toolSecurity.enable` | bool | `false` | 是否启用工具安全拦截 |
 | `defaults.toolSecurity.mode` | string | `deny` | 拦截模式：deny（黑名单）或 allow（白名单） |
 | `defaults.media.enable` | bool | `true` | 是否启用媒体存储 |
@@ -410,6 +423,21 @@ bindings:
 | `match.peer.kind` | string | 精细匹配类型：group, p2p |
 | `match.peer.id` | string | 群组/用户 ID |
 
+### upgrade 升级配置
+
+| 配置项 | 类型 | 默认值 | 说明 |
+|--------|------|--------|------|
+| `signature_verify` | bool | `false` | 是否启用签名验证 |
+| `backup_dir` | string | `{root_dir}/backups` | 备份目录 |
+| `binary_path` | string | `/usr/local/bin/tpclaw` | 二进制文件路径 |
+| `service_name` | string | `tpclaw` | systemd 服务名称 |
+| `use_sudo` | bool | `false` | 是否使用 sudo 执行升级脚本 |
+| `check_url` | string | - | 版本检查 URL |
+| `auto_check` | bool | `true` | 是否启用自动检查更新 |
+| `auto_check_interval` | int | `24` | 自动检查间隔（小时） |
+| `download_timeout` | int | `300` | 下载超时（秒） |
+| `download_dir` | string | `{root_dir}/tmp/upgrade` | 临时下载目录 |
+
 ## 配置优先级
 
 配置值的优先级从高到低：
@@ -429,15 +457,10 @@ bindings:
 api_key: "${OPENAI_API_KEY}"
 ```
 
-### 使用 .env 文件
+支持带默认值的语法（如果环境变量不存在则使用默认值）：
 
-创建 `.env` 文件（不要提交到版本控制）：
-
-```bash
-OPENAI_API_KEY=sk-xxx
-ZHIPU_API_KEY=xxx.xxx
-FEISHU_APP_ID=cli_xxx
-FEISHU_APP_SECRET=xxx
+```yaml
+api_key: "${OPENAI_API_KEY:-sk-default-key}"
 ```
 
 ### 使用密钥管理服务

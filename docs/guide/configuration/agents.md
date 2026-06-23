@@ -43,7 +43,8 @@ agents:
       mode: "safeguard"         # safeguard | auto | off
       strategy: "summary"      # summary | sliding_window | hybrid
       keep_recent_count: 10     # 保留最近消息数
-      target_tokens: 80000      # 目标 token 数
+      target_tokens: 0          # 固定阈值（0 表示不使用）
+      target_tokens_percent: 70 # 基于模型上下文的百分比（优先级高于 target_tokens）
       memory_flush: true        # 压缩时刷新内存
 
     # 工具安全策略（默认关闭）

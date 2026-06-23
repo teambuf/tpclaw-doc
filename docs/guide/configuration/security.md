@@ -31,54 +31,21 @@ security:
 只有 `admin` 用户可以执行技能上传、创建、更新、删除等全局管理操作。
 :::
 
-## API Key 认证
+### API Key 认证
 
-### 配置 API Key
+用户配置支持 `password:apiKey` 格式，同时支持密码和 API Key 认证：
 
 ```yaml
 security:
-  api_keys:
-    - name: "admin"
-      key: "${ADMIN_API_KEY}"
-      roles: ["admin", "read", "write"]
-
-    - name: "readonly"
-      key: "${READONLY_API_KEY}"
-      roles: ["read"]
+  users:
+    admin: "admin-password:your-api-key"
 ```
 
-### 使用 API Key
+使用 API Key 认证：
 
 ```bash
 curl -H "Authorization: Bearer your-api-key" \
   http://localhost:9527/api/v1/agents
-```
-
-## 角色权限
-
-| 角色 | 权限 |
-|------|------|
-| `admin` | 所有权限 |
-| `read` | 只读权限 |
-| `write` | 写入权限 |
-
-## CORS 配置
-
-```yaml
-security:
-  cors:
-    enabled: true
-    allowedOrigins:
-      - "http://localhost:*"
-      - "https://your-domain.com"
-    allowedMethods:
-      - "GET"
-      - "POST"
-      - "PUT"
-      - "DELETE"
-    allowedHeaders:
-      - "Authorization"
-      - "Content-Type"
 ```
 
 ## 限流配置
@@ -113,6 +80,8 @@ security:
 
 ### 环境变量
 
+在配置文件中使用 `${VAR}` 语法引用环境变量：
+
 ```yaml
 models:
   providers:
@@ -120,12 +89,18 @@ models:
       api_key: "${OPENAI_API_KEY}"
 ```
 
-### .env 文件
+支持带默认值的语法（如果环境变量不存在则使用默认值）：
 
-```bash
-OPENAI_API_KEY=sk-xxx
-ADMIN_API_KEY=admin-xxx
+```yaml
+api_key: "${OPENAI_API_KEY:-sk-default-key}"
 ```
+
+### 使用密钥管理服务
+
+生产环境推荐使用专业的密钥管理服务：
+- HashiCorp Vault
+- AWS Secrets Manager
+- Azure Key Vault
 
 ## 最佳实践
 

@@ -192,5 +192,4 @@ tpclaw agent -m "继续深入分析" -a main --history
 ## 相关文档
 
 - [智能体配置](/guide/configuration/agents) - 智能体配置说明
-- [多智能体协作](/guide/advanced/multi-agent) - 多智能体协作
 - [CLI 命令参考](/guide/api/cli) - 完整 CLI 命令
