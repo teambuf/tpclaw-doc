@@ -147,6 +147,37 @@ data: {"id":"chatcmpl-xxx","choices":[{"delta":{"content":""},"finish_reason":"s
 data: [DONE]
 ```
 
+### 工具调用过程（AG-UI 扩展）
+
+智能体在服务端自主执行工具。默认流式响应只返回最终文本、**不下发 `tool_calls`**——因为 `tool_calls` 在 OpenAI 协议里表示"由客户端执行"，下发会让 Cherry Studio、Claude Code 等标准客户端去执行服务端已经执行过的工具，造成重复执行或报错。这是第三方接入的默认行为，无需额外配置。
+
+若客户端需要流式展示完整的工具调用过程（调用、参数、结果），在请求头带 `X-Stream-Protocol: agui` 启用 AG-UI 扩展模式：
+
+```bash
+curl -X POST http://localhost:9527/api/v1/chat/completions \
+  -H "Authorization: Bearer your-api-key" \
+  -H "Content-Type: application/json" \
+  -H "X-Stream-Protocol: agui" \
+  -d '{
+    "model": "main",
+    "messages": [{"role": "user", "content": "帮我查看当前目录文件"}],
+    "stream": true
+  }'
+```
+
+扩展模式下，工具调用事件放在 `choices[0].delta.tool_calls[0]` 中：
+
+| 字段 | 说明 |
+|------|------|
+| `type` | `TOOL_CALL_START`（开始）/ `TOOL_CALL_RESULT`（结果） |
+| `toolCallId` | 工具调用唯一 ID |
+| `toolCallName` | 工具名称 |
+| `arguments` | 工具参数（JSON 字符串，START 时携带） |
+| `content` | 工具执行结果（RESULT 时携带） |
+| `toolType` | 工具类型：`builtin` / `rulechain` / `subagent` / `mcp` |
+
+> TpClaw 自带 Web 界面默认启用该扩展，实时展示工具调用卡片。
+
 ## 绑定配置
 
 API 通道的绑定配置：
