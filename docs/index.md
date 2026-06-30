@@ -41,13 +41,13 @@ features:
 
   # 首页公告（置空 notice 或删除该字段则不显示公告）
 notice:
-  version: v1.0.10
-  date: 2026-06-23
-  title: 📢 TPCLAW v1.0.10 发布！
+  version: v1.1.0
+  date: 2026-06-30
+  title: 📢 TPCLAW v1.1.0 发布！
   items:
-    - 供应商支持多实例配置，新增自定义（OpenAI 兼容）类型
-    - 聊天界面实时显示 token 使用率
-    - 技能管理增强：权限适配 + 文件浏览器查看技能附属文件
+    - 会话级模型切换：聊天中临时切换模型，不影响全局智能体配置
+    - 思考强度设置：统一选择器支持 GLM/GPT/o 系列等模型的思考模式与深度调节
+    - 模型扩展字段可视化：按模型自动展示思考、推理等参数，无需手填 key
   link: /guide/getting-started/installation
   linkText: 立即下载
 ---
