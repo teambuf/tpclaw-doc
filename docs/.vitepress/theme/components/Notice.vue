@@ -6,11 +6,18 @@ import { useData } from 'vitepress'
 const { frontmatter } = useData()
 const notice = computed(() => frontmatter.value.notice)
 
-// YAML 里 date: 2026-06-23 会被解析成 Date 对象，这里统一格式化为 YYYY-MM-DD
+// 统一格式化为 YYYY-MM-DD
+// 注意：VitePress 把 YAML 里的 Date 对象经 SSR 序列化后，到客户端会变成
+// ISO 字符串（如 "2026-06-30T00:00:00.000Z"），所以字符串也要处理
 const dateText = computed(() => {
   const d = notice.value?.date
   if (!d) return ''
-  if (typeof d === 'string') return d
+  if (typeof d === 'string') {
+    const s = d.trim()
+    // 以 YYYY-MM-DD 开头的（含 ISO 字符串）直接截取前 10 位，避免时区解析偏差
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10)
+    return s
+  }
   const dt = new Date(d)
   if (isNaN(dt.getTime())) return String(d)
   const y = dt.getFullYear()
