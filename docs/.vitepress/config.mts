@@ -98,6 +98,8 @@ export default withMermaid(defineConfig({
             { text: 'write - 文件写入', link: '/guide/tools/write' },
             { text: 'edit - 文件编辑', link: '/guide/tools/edit' },
             { text: 'bash - Shell 执行', link: '/guide/tools/bash' },
+            { text: 'grep - 内容搜索', link: '/guide/tools/grep' },
+            { text: 'glob - 文件名匹配', link: '/guide/tools/glob' },
             { text: 'skill - 技能调用', link: '/guide/tools/skill' },
             { text: 'browser_use - 浏览器自动化', link: '/guide/tools/browser-use' },
           ]

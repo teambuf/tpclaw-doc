@@ -105,6 +105,8 @@ graph TB
 | [write](/guide/tools/write) | 创造 | 写入内容到文件，支持创建、覆盖、追加 |
 | [edit](/guide/tools/edit) | 进化 | 文件编辑，支持搜索替换、插入删除 |
 | [bash](/guide/tools/bash) | 行动 | 执行 Shell 命令，与系统交互 |
+| [grep](/guide/tools/grep) | 导航 | 正则搜索文件内容，支持上下文与多模式输出 |
+| [glob](/guide/tools/glob) | 导航 | 按 glob 模式匹配文件路径（`**/*.go`） |
 | [skill](/guide/tools/skill) | 学习 | 调用预定义技能，扩展专业能力 |
 
 ### 可选工具
