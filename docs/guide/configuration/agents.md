@@ -115,6 +115,10 @@ agents:
 
 ### 工具安全策略
 
+::: tip 完整说明
+工具拦截、文件路径与跨目录访问控制的完整说明见 [工具安全与文件访问控制](/guide/configuration/tool-security)，本节仅列出与智能体配置相关的部分。
+:::
+
 通过 `toolSecurity` 配置控制智能体可使用的工具范围：
 
 ```yaml

@@ -399,6 +399,11 @@ upgrade:
 | `defaults.compaction.target_tokens_percent` | int | `70` | 基于模型上下文的百分比（优先级高于 target_tokens） |
 | `defaults.toolSecurity.enable` | bool | `false` | 是否启用工具安全拦截 |
 | `defaults.toolSecurity.mode` | string | `deny` | 拦截模式：deny（黑名单）或 allow（白名单） |
+
+::: tip 工具安全与文件访问控制
+`toolSecurity` 的完整说明（工具/命令拦截、文件路径与跨目录访问控制、生产配置示例）见 [工具安全与文件访问控制](/guide/configuration/tool-security)。
+:::
+
 | `defaults.media.enable` | bool | `true` | 是否启用媒体存储 |
 
 ### channels 通道配置

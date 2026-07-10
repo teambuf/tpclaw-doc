@@ -146,6 +146,7 @@ export default withMermaid(defineConfig({
             { text: '智能体配置', link: '/guide/configuration/agents' },
             { text: '通道配置', link: '/guide/configuration/channels' },
             { text: '认证配置', link: '/guide/configuration/api-key' },
+            { text: '工具安全与文件访问控制', link: '/guide/configuration/tool-security' },
             { text: '安全配置', link: '/guide/configuration/security' },
           ]
         }

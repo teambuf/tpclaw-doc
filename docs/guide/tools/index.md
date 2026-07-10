@@ -231,6 +231,10 @@ graph TB
 
 ## 工具配置
 
+::: tip 文件访问安全
+文件类工具（read/write/edit/grep/glob/bash）的访问范围受 `workDir` / `allowDirs` 限制，详见 [工具安全与文件访问控制](/guide/configuration/tool-security)。
+:::
+
 工具在智能体配置文件中定义：
 
 ```yaml
