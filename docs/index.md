@@ -41,21 +41,22 @@ features:
 
   # 首页公告（置空 notice 或删除该字段则不显示公告）
 notice:
-  version: v1.1.0
-  date: 2026-06-30
-  title: 📢 TPCLAW v1.1.0 发布！
+  version: v1.1.1
+  date: 2026-07-10
+  title: 📢 TPCLAW v1.1.1 发布！
   items:
-    - 'feat: 会话级模型切换'
-    - 'feat: 思考强度设置'
-    - 'feat: 模型扩展字段可视化'
-    - 'feat: 支持设置备用模型供应商，实现故障转移'
-    - 'feat: 支持mid-stream流重试'
-    - 'feat: 支持html格式在线预览和复制'
-    - 'feat: 聊天界面显示思考过程'
-    - 'feat: 聊天界面显示token使用率'
-    - 'fix: 修复实时监控鉴权问题'
-    - 'fix: 智能体openAI协议接口在Cherry Studio访问有错误'
-    - 'chore: 更换在线升级服务器'
+    - 'feat: agent 循环防护——自动检测并拦截死循环/重复 tool_call'
+    - 'feat: write 工具去掉冗余参数字段、edit 拦截无意义替换'
+    - 'feat: 工具调用区优化——默认折叠、更紧凑、全部展开/折叠按钮'
+    - 'feat: 会话列表显示运行状态（生成中/待发送/异常/空闲）'
+    - 'feat: 会话压缩前后端状态同步（摘要回传+分割线/灰显）'
+    - 'feat: 默认智能体增加 grep/glob 搜索工具'
+    - 'feat: 启动时打印版本信息（版本/commit/build time）'
+    - 'fix: 修复工具调用列表滚动错位+项重叠'
+    - 'fix: 修复跨供应商模型扩展字段无法识别'
+    - 'fix: 修复工作空间懒初始化、blob 错误、地址栏同步'
+    - 'fix: /new 保留模型偏好（延续用户切换的模型）'
+    - 'refactor: 文件安全策略回归全局（移除 per-agent 配置）'
   link: /guide/getting-started/installation
   linkText: 立即下载
 ---
