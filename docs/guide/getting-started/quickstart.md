@@ -6,7 +6,7 @@
 
 ### Windows（推荐）
 
-1. 下载 [tpclaw-v1.0.7-windows-amd64-embed.zip](https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-windows-amd64-embed.zip)
+1. 前往 [下载页面](./installation.md) 下载最新版 Windows 安装包
 2. 右键解压到任意目录
 3. 双击 `tpclaw.exe` 启动
 4. 浏览器打开 `http://localhost:9527`，使用默认密码 `admin!@#` 登录
@@ -15,10 +15,12 @@
 
 ### Linux
 
+前往 [下载页面](./installation.md) 获取最新版 Linux 安装包，或使用命令行：
+
 ```bash
-# 下载并解压（以 AMD64 为例）
-wget https://gitee.com/rulego/tpclaw/releases/download/v1.0.7/tpclaw-v1.0.7-linux-amd64-embed.tar.gz
-tar -xzf tpclaw-v1.0.7-linux-amd64-embed.tar.gz
+# 下载并解压（以 AMD64 为例，版本号请替换为最新）
+wget https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-linux-amd64-embed.tar.gz
+tar -xzf tpclaw-v1.1.1-linux-amd64-embed.tar.gz
 cd tpclaw
 
 # 一键安装并启动
