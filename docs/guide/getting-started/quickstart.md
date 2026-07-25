@@ -19,8 +19,8 @@
 
 ```bash
 # 下载并解压（以 AMD64 为例，版本号请替换为最新）
-wget https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-linux-amd64-embed.tar.gz
-tar -xzf tpclaw-v1.1.1-linux-amd64-embed.tar.gz
+wget https://gitee.com/rulego/tpclaw/releases/download/v1.1.2/tpclaw-v1.1.2-linux-amd64-embed.tar.gz
+tar -xzf tpclaw-v1.1.2-linux-amd64-embed.tar.gz
 cd tpclaw
 
 # 一键安装并启动

@@ -21,11 +21,11 @@
 
 | 平台 | 架构 | 下载 |
 |------|------|------|
-| Windows | AMD64 | [tpclaw-v1.1.1-windows-amd64-embed.zip](https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-windows-amd64-embed.zip) |
-| Linux | AMD64 | [tpclaw-v1.1.1-linux-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-linux-amd64-embed.tar.gz) |
-| Linux | ARM64 | [tpclaw-v1.1.1-linux-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-linux-arm64-embed.tar.gz) |
-| macOS | ARM64 | [tpclaw-v1.1.1-darwin-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-darwin-arm64-embed.tar.gz) |
-| macOS | AMD64 | [tpclaw-v1.1.1-darwin-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.1/tpclaw-v1.1.1-darwin-amd64-embed.tar.gz) |
+| Windows | AMD64 | [tpclaw-v1.1.2-windows-amd64-embed.zip](https://gitee.com/rulego/tpclaw/releases/download/v1.1.2/tpclaw-v1.1.2-windows-amd64-embed.zip) |
+| Linux | AMD64 | [tpclaw-v1.1.2-linux-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.2/tpclaw-v1.1.2-linux-amd64-embed.tar.gz) |
+| Linux | ARM64 | [tpclaw-v1.1.2-linux-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.2/tpclaw-v1.1.2-linux-arm64-embed.tar.gz) |
+| macOS | ARM64 | [tpclaw-v1.1.2-darwin-arm64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.2/tpclaw-v1.1.2-darwin-arm64-embed.tar.gz) |
+| macOS | AMD64 | [tpclaw-v1.1.2-darwin-amd64-embed.tar.gz](https://gitee.com/rulego/tpclaw/releases/download/v1.1.2/tpclaw-v1.1.2-darwin-amd64-embed.tar.gz) |
 
 > 更多历史版本请访问 [GitHub Releases](https://github.com/teambuf/tpclaw/releases) 页面。
 
@@ -37,7 +37,7 @@ Windows 版本为绿色免安装版本，解压后即可运行。
 
 1. **解压文件**
 
-   右键点击下载的 `tpclaw-v1.1.1-windows-amd64-embed.zip` 文件，选择"解压到当前文件夹"或使用解压软件解压。
+   右键点击下载的 `tpclaw-v1.1.2-windows-amd64-embed.zip` 文件，选择"解压到当前文件夹"或使用解压软件解压。
 
 2. **运行程序**
 
@@ -69,10 +69,10 @@ Linux 版本提供安装脚本，支持用户级和系统级两种安装方式�
 
    ```bash
    # AMD64
-   tar -xzf tpclaw-v1.1.1-linux-amd64-embed.tar.gz
+   tar -xzf tpclaw-v1.1.2-linux-amd64-embed.tar.gz
 
    # ARM64
-   tar -xzf tpclaw-v1.1.1-linux-arm64-embed.tar.gz
+   tar -xzf tpclaw-v1.1.2-linux-arm64-embed.tar.gz
    ```
 
 2. **运行安装脚本**
@@ -151,7 +151,7 @@ Linux 版本提供安装脚本，支持用户级和系统级两种安装方式�
 ```bash
 tpclaw version
 # 输出示例:
-# TpClaw version: v1.1.1
+# TpClaw version: v1.1.2
 # Go version: go1.24.0
 # OS/Arch: linux/amd64
 ```

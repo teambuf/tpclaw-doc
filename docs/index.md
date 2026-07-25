@@ -41,18 +41,15 @@ features:
 
   # 首页公告（置空 notice 或删除该字段则不显示公告）
 notice:
-  version: v1.1.1
-  date: 2026-07-10
-  title: 📢 TPCLAW v1.1.1 发布！
+  version: v1.1.2
+  date: 2026-07-25
+  title: 📢 TPCLAW v1.1.2 发布！
   items:
-    - 'feat: agent 循环防护——自动检测并拦截死循环/重复 tool_call'
-    - 'feat: 工具调用区优化——默认折叠、更紧凑、全部展开/折叠按钮'
-    - 'feat: 会话列表显示运行状态（生成中/待发送/异常/空闲）'
-    - 'feat: 默认智能体增加 grep/glob 搜索工具'
-    - 'fix: 修复工具调用列表滚动错位+项重叠'
-    - 'fix: 修复跨供应商模型扩展字段无法识别'
-    - 'fix: /new 保留模型偏好（延续用户切换的模型）'
-    - 'refactor: 文件安全策略回归全局（移除 per-agent 配置）'
+    - 'feat: 会话列表重构——分组、标签管理、导入导出、消息多选交互'
+    - 'feat: 标签管理支持隐藏内置标签，收入折叠恢复区'
+    - 'feat: 文件工具路径支持 ~ 展开（如 ~/.tpclaw/xxx）'
+    - 'fix: read 工具缺省 operation 默认读文件，新增 read 操作别名'
+    - 'refactor: 移除 logs_dir 配置项（日志统一在数据根目录下）'
   link: /guide/getting-started/installation
   linkText: 立即下载
 ---
