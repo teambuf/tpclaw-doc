@@ -41,15 +41,17 @@ features:
 
   # 首页公告（置空 notice 或删除该字段则不显示公告）
 notice:
-  version: v1.1.2
-  date: 2026-07-25
-  title: 📢 TPCLAW v1.1.2 发布！
+  version: v1.2.1
+  date: 2026-10-23
+  title: 📢 TPCLAW v1.2.1 发布！
   items:
-    - 'feat: 会话列表重构——分组、标签管理、导入导出、消息多选交互'
-    - 'feat: 标签管理支持隐藏内置标签，收入折叠恢复区'
-    - 'feat: 文件工具路径支持 ~ 展开（如 ~/.tpclaw/xxx）'
-    - 'fix: read 工具缺省 operation 默认读文件，新增 read 操作别名'
-    - 'refactor: 移除 logs_dir 配置项（日志统一在数据根目录下）'
+    - 'feat: 智能体工具面板支持配置 MCP 工具'
+    - 'feat: MCP 图片识别钩子——智能体可识读工具返回的图片'
+    - 'feat: 智能体消息支持 ext 透传参数，直达下游接口并原样回显'
+    - 'fix: 聊天消息内图片限宽，支持点击查看原图'
+    - 'fix: 视觉模型文件截断与模型选择打分修复'
+    - 'fix: 智能体工作空间宽度自适应与全屏滚动条修复'
+    - 'chore: 依赖对齐 RuleGo v1.0.0'
   link: /guide/getting-started/installation
   linkText: 立即下载
 ---
